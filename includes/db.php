@@ -13,4 +13,11 @@ function createDbConnection(){
         }
     
 }
+function getDBUser(){
+    $dbo = createDbConnection();
+    $stmt = $dbo->prepare("SELECT * from user where idUser = '1'");
+    $stmt -> execute();
+    $user = $stmt -> fetch();
+    return $user;
+}
 ?>
