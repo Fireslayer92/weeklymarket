@@ -1,12 +1,17 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">   
-<script src="https://kit.fontawesome.com/55e45674b5.js" crossorigin="anonymous"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+<html lang="de">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- fontawesome icons -->
+    <script src="https://kit.fontawesome.com/55e45674b5.js" crossorigin="anonymous"></script>
 
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 
-</head>
+    <title>Wochenmarkt</title>
+  </head>
 <body>
   <!--Navigation-->
 <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
@@ -24,12 +29,70 @@
             <a class="nav-link" href="#">Über uns</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Login</a>
+            <a class="nav-link" data-bs-toggle="modal" data-bs-target="#myLogin" href="#">Login</a>
           </li>
         </ul> 
       </div>
   </div>
 </nav>
+
+<!-- Modal login -->
+
+<div class="modal fade" id="myLogin" tabindex="-1" aria-labelledby="myLoginLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="myLoginLabel">Login</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="username" class="col-form-label">Username:</label>
+            <input type="text" class="form-control" id="username">
+          </div>
+          <div class="mb-3">
+            <label for="passwort" class="col-form-label">Passwort:</label>
+            <input type="text" class="form-control" id="passwort">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="userRegistration" data-bs-toggle="modal" data-bs-target="#myRegistration" data-bs-dismiss="modal">Registrieren</button>
+        <button type="button" class="btn btn-primary" id="userLogin">Login</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal rregistration -->
+
+<div class="modal fade" id="myRegistration" tabindex="-1" aria-labelledby="myRegistrationLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="myRegistrationLabel">Registrieren</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="username" class="col-form-label">Username:</label>
+            <input type="text" class="form-control" id="username">
+          </div>
+          <div class="mb-3">
+            <label for="passwort" class="col-form-label">Passwort:</label>
+            <input type="text" class="form-control" id="passwort">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="userRegistration">Registrieren</button>
+        <button type="button" class="btn btn-primary" id="userLogin">Login</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 <!--Image Slider -->
@@ -147,7 +210,6 @@
 
 
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
 </body>
 </html>
