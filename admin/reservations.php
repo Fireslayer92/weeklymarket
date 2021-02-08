@@ -3,8 +3,22 @@
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
     <title>Weeklymarket</title>
+    <meta charset="UTF-8">
     <?php
+        setlocale (LC_ALL, '');
         include '../includes/db.php';
+        $dbo = createDbConnection();
+        if (isset($_POST['paid'])){
+            $stmt = $dbo -> prepare("Update reservation set paid = 1 where idReservation = '".$_POST['idReservation']."';");
+            $stmt -> execute();
+            header ('Location: ' . $_SERVER['REQUEST_URI']);
+            exit();
+        } elseif(isset($_POST['notpaid'])){
+            $stmt = $dbo -> prepare("Update reservation set paid = 0 where idReservation = '".$_POST['idReservation']."';");
+            $stmt -> execute();
+            header ('Location: ' . $_SERVER['REQUEST_URI']);
+            exit();
+        }
     ?>
 </head>
 <body>
@@ -27,10 +41,55 @@
                 <li class="nav-item">
                 <a class="nav-link" href="./sites.php">Standorte</a>
                 </li>
+                <li class="nav-item">
+                <a class="nav-link" href="./checks.php">Pr&uuml;fungen</a>
+                </li>
             </ul>
             </div>
         </div>
     </nav>
+    <h3>&Uuml;bersicht</h3>
+    <?php
+        $sitestmt = $dbo -> prepare("SELECT idSite, name, spaces from site;");
+        $sitestmt -> execute();
+        $siteresult = $sitestmt -> fetchAll();
+        foreach ($siteresult as $row){
+            echo('<div>');
+            echo('<h5>'.$row['name'].'</h5>');
+            echo('<table>');
+            echo('<tr>');
+            echo('<th>Monat</th>');
+            echo('<th>Anzahl Reservationen</th>');
+            echo('<th>Freie Pl&auml;tze</th>');
+            echo('</tr>');
+            for ($i=0;$i<12;$i++){
+                $month = date('m',strtotime('first day of +'.$i.' month'));
+                echo('<tr>');
+                echo('<td>');
+                //echo(strtotime('first day of +'.$i.' month'));
+                if ($month != 03){
+                    echo(strftime("%B",strtotime('first day of +'.$i.' month')));
+                } else {
+                    echo("M&auml;rz");
+                }
+                echo('</td>');
+                echo('<td>');
+                $resstmt = $dbo -> prepare("select count(idReservation) as count from reservation where fromDate < '2021-".$month."-01' and toDate > '2021-".$month."-01'  and site_idSite = ".$row['idSite']);
+                $resstmt -> execute();
+                $resresult = $resstmt -> fetch();
+                echo($resresult['count']);
+                echo('</td>');
+                $freeSpaces = $row['spaces'] - $resresult['count'];
+                echo('<td>');
+                echo($freeSpaces);
+                echo('</td>');
+                echo('</tr>');
+            }
+            echo('</table>');
+            echo('</div>');
+        }
+
+    ?>
     <table>
         <tr>
             <th>Reservationsnummer</th>
@@ -42,14 +101,6 @@
             <th>Rechnung gestellt</th>
         </tr>
         <?php
-            $dbo = createDbConnection();
-            if (isset($_POST['paid'])){
-                $stmt = $dbo -> prepare("Update reservation set paid = 1 where idReservation = '".$_POST['idReservation']."';");
-                $stmt -> execute();
-            } elseif(isset($_POST['notpaid'])){
-                $stmt = $dbo -> prepare("Update reservation set paid = 0 where idReservation = '".$_POST['idReservation']."';");
-                $stmt -> execute();
-            }
             $stmt = $dbo -> prepare("SELECT bp.name as 'boothprovider' , s.name as 'site', r.fromDate as 'fromdate', r.toDate as 'todate', r.trail as 'trail', r.paid as 'paid', r.idReservation as 'idReservation'  FROM reservation r join boothProvider bp on bp.idProvider = r.boothProvider_idProvider join site s on s.idSite = r.site_idSite");
             $stmt -> execute();
             $result = $stmt -> fetchAll();

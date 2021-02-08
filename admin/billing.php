@@ -10,21 +10,22 @@
 <body>
     <?php
         $dbo = createDbConnection();
-        if (isset($_POST['billingChange'])){
+        if (isset($_POST['billingChange']) && isset($_SERVER['REQUEST_URI'])){
             switch ($_POST['billingChange']) {
                 case 'new':
                     $billingDate = date('Y-m-d H:i:s',strtotime($_POST['billingDateInput']));
                     $insert = $dbo -> prepare ("INSERT INTO billing (billingDate, billingCondition, billingStatus, reservation_idReservation) VALUES ('".$billingDate."','".$_POST['billingConditionInput']."','Open','".$_POST['idReservationInput']."')");
                     $insert -> execute();
-                    $update = $dbo -> prepare ("UPDATE reservation set paid = 1 where idReservation = ".$_POST['idReservationInput']);
-                    $update -> execute();
+                    header ('Location: ' . $_SERVER['REQUEST_URI']);
                     break;
                 case 'paid':
                     $update = $dbo -> prepare ("UPDATE billing set billingStatus = 'paid' where idBilling = ".$_POST['idBilling']);
                     $update -> execute();
+                    header ('Location: ' . $_SERVER['REQUEST_URI']);
                     break;
                     
                 default:
+                    header ('Location: ' . $_SERVER['REQUEST_URI']);
                     break;
             }
             
@@ -48,6 +49,9 @@
                 </li>
                 <li class="nav-item">
                 <a class="nav-link" href="./sites.php">Standorte</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="./checks.php">Pr&uuml;fungen</a>
                 </li>
             </ul>
             </div>
@@ -88,12 +92,14 @@
                 echo($row['site']);
                 echo('</td>');
                 echo('<td>');
+                if($row['billingStatus'] != 'paid'){
                     echo('<form method="POST" action="./billing.php">');
                     echo('<input type="hidden" name="idBilling" id="idBilling" value="'.$row['idBilling'].'"/>');
                     echo('<input type="hidden" name="idReservation" id="idReservation" value="'.$row['idReservation'].'"/>');
                     echo('<input type="hidden" name="billingChange" id="billingChange" value="paid"/>');
                     echo('<button type="submit">Rechnung bezahlt</button>');
                     echo('</form>');
+                }
                 echo('</td>');
                 echo('</tr>');
                 

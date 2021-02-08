@@ -27,6 +27,9 @@
                 <li class="nav-item">
                 <a class="nav-link" href="./sites.php">Standorte</a>
                 </li>
+                <li class="nav-item">
+                <a class="nav-link" href="./checks.php">Pr&uuml;fungen</a>
+                </li>
             </ul>
             </div>
         </div>
