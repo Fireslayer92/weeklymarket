@@ -1,21 +1,31 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+<script
+			  src="https://code.jquery.com/jquery-3.5.1.min.js"
+			  integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+			  crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+    <script src="../includes/jquery.tablesort.min.js"></script>
+    <script src="../includes/script.js"></script>
     <title>Weeklymarket</title>
     <meta charset="UTF-8">
     <?php
         setlocale (LC_ALL, '');
         include '../includes/db.php';
         $dbo = createDbConnection();
-        if (isset($_POST['paid'])){
-            $stmt = $dbo -> prepare("Update reservation set paid = 1 where idReservation = '".$_POST['idReservation']."';");
-            $stmt -> execute();
-            header ('Location: ' . $_SERVER['REQUEST_URI']);
-            exit();
-        } elseif(isset($_POST['notpaid'])){
-            $stmt = $dbo -> prepare("Update reservation set paid = 0 where idReservation = '".$_POST['idReservation']."';");
-            $stmt -> execute();
+        if (isset($_POST['reservationChange']) && isset($_SERVER['REQUEST_URI'])){
+            switch ($_POST['reservationChange']) {
+                case 'paid': 
+                    $stmt = $dbo -> prepare("Update reservation set paid = 1 where idReservation = '".$_POST['idReservation']."';");
+                    $stmt -> execute();
+                    break;
+                case 'notPaid':
+                    $stmt = $dbo -> prepare("Update reservation set paid = 0 where idReservation = '".$_POST['idReservation']."';");
+                    $stmt -> execute();
+                    break;
+            }
             header ('Location: ' . $_SERVER['REQUEST_URI']);
             exit();
         }
@@ -24,30 +34,9 @@
 <body>
     <h1>Welcome to the Admin-Interface</h1>
     <h2>reservations</h2>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="./index.php">Admin-Interface</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="./billing.php">Rechnungen</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="./reservations.php">Reservationen</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="./sites.php">Standorte</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="./checks.php">Pr&uuml;fungen</a>
-                </li>
-            </ul>
-            </div>
-        </div>
-    </nav>
+    <?php
+        include '../includes/nav.php';
+    ?>
     <h3>&Uuml;bersicht</h3>
     <?php
         $sitestmt = $dbo -> prepare("SELECT idSite, name, spaces from site;");
@@ -68,9 +57,9 @@
                 echo('<td>');
                 //echo(strtotime('first day of +'.$i.' month'));
                 if ($month != 03){
-                    echo(strftime("%B",strtotime('first day of +'.$i.' month')));
+                    echo(strftime("%B %Y",strtotime('first day of +'.$i.' month')));
                 } else {
-                    echo("M&auml;rz");
+                    echo("M&auml;rz ".strftime("%Y",strtotime('first day of +'.$i.' month')));
                 }
                 echo('</td>');
                 echo('<td>');
@@ -90,7 +79,9 @@
         }
 
     ?>
+    <input id="filterInput" type="text" placeholder="Suchen..">
     <table>
+        <thead>
         <tr>
             <th>Reservationsnummer</th>
             <th>Anbieter</th>
@@ -100,6 +91,8 @@
             <th>Probe</th>
             <th>Rechnung gestellt</th>
         </tr>
+        </thead>
+        <tbody id='filterTable'>
         <?php
             $stmt = $dbo -> prepare("SELECT bp.name as 'boothprovider' , s.name as 'site', r.fromDate as 'fromdate', r.toDate as 'todate', r.trail as 'trail', r.paid as 'paid', r.idReservation as 'idReservation'  FROM reservation r join boothProvider bp on bp.idProvider = r.boothProvider_idProvider join site s on s.idSite = r.site_idSite");
             $stmt -> execute();
@@ -139,13 +132,13 @@
                 if ($row['paid'] == 0){
                     echo('<form method="POST">');
                     echo('<input type="hidden" name="idReservation" id="idReservation" value="'.$row['idReservation'].'"/>');
-                    echo('<input type="hidden" name="paid" id="paid" value="1"/>');
+                    echo('<input type="hidden" name="reservationChange" id="reservationChange" value="paid"/>');
                     echo('<button type="submit">Rechnung bezahlt</button>');
                     echo('</form>');
                 } else{
                     echo('<form method="POST">');
                     echo('<input type="hidden" name="idReservation" id="idReservation" value="'.$row['idReservation'].'"/>');
-                    echo('<input type="hidden" name="notpaid" id="notpaid" value="1"/>');
+                    echo('<input type="hidden" name="reservationChange" id="reservationChange" value="notPaid"/>');
                     echo('<button type="submit">Rechnung nicht bezahlt</button>');
                     echo('</form>');
                 }
@@ -162,6 +155,7 @@
                 echo('</tr>');
             }
         ?>
+        </tbody>
     </table>
 </body>
 </html>

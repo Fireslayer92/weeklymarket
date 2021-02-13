@@ -1,8 +1,15 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+<script
+			  src="https://code.jquery.com/jquery-3.5.1.min.js"
+			  integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+			  crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+    <script src="../includes/script.js"></script>
     <title>Weeklymarket</title>
+    <meta charset="UTF-8">
     <?php
         include '../includes/db.php';
     ?>
@@ -10,35 +17,9 @@
 <body>
     <h1>Welcome to the Admin-Interface</h1>
     <h2>Index</h2>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="./index.php">Admin-Interface</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="./billing.php">Rechnungen</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="./reservations.php">Reservationen</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="./sites.php">Standorte</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="./checks.php">Pr&uuml;fungen</a>
-                </li>
-            </ul>
-            </div>
-        </div>
-    </nav>
     <?php
-        $dbo = createDbConnection();
-        foreach($dbo->query('SELECT * from user') as $row) {
-            print_r($row);
-        }
+        include '../includes/nav.php';
     ?>
+    <h1>Willkommen bei der Administrativen Verwaltung. Bitte wählen Sie aus, was Sie tun wollen.</h1>
 </body>
 </html>
