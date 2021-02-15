@@ -7,18 +7,23 @@
     </button>
       <div class="collapse navbar-collapse justify-content-end" id="navMenue">
         <ul class="navbar-nav ml-auto justify-content-end">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <span class="navbar-toggler-icon"></span> Menü
-          </a>
-          <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
-                <li><a class="dropdown-item" aria-current="page" href="./billing.php">Rechnungen</a></li>
-                <li><a class="dropdown-item" href="./reservations.php">Reservationen</a></li>
-                <li><a class="dropdown-item" href="./sites.php">Standorte</a></li>
-                <li><a class="dropdown-item" href="./provider.php">Standanbieter</a></li>
-                <li><a class="dropdown-item" href="./checks.php">Pr&uuml;fungen</a></li>
-          </ul>
-        </li>
+        <?php
+        if ( 'admin' == $_SESSION['privileges'] ) {
+          
+          echo ('<li class="nav-item dropdown">');
+          echo ('<a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">');
+          echo ('<span class="navbar-toggler-icon"></span> Menü');
+          echo ('</a>');
+          echo ('<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">');
+          echo ('<li><a class="dropdown-item" aria-current="page" href="./billing.php">Rechnungen</a></li>');
+          echo ('<li><a class="dropdown-item" href="./reservations.php">Reservationen</a></li>');
+          echo ('<li><a class="dropdown-item" href="./sites.php">Standorte</a></li>');
+          echo ('<li><a class="dropdown-item" href="./provider.php">Standanbieter</a></li>');
+          echo ('<li><a class="dropdown-item" href="./checks.php">Pr&uuml;fungen</a></li>');
+          echo ('</ul>');
+        echo ('</li>');
+         }        
+        ?>
           <li class="nav-item active">
             <a class="nav-link" href="index.php">Home</a>
           </li>
@@ -35,7 +40,7 @@
           <li class="nav-item">
             <?php
                 if (isset($_SESSION['username'])) {
-                  echo '<a href="scripts/logout.php" class="nav-link">Log out</a>';
+                  echo '<a href="includes/logout.php" class="nav-link">Log out</a>';
                 }
                 else {
                   echo '<a href="#login" class="nav-link" data-bs-toggle="modal" data-bs-target="#myLogin">Login</a>';
@@ -57,7 +62,7 @@
         <h5 class="modal-title" id="myLoginLabel">Login</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="scripts/login.php" method="post">
+      <form action="includes/login.php" method="post">
       <div class="modal-body">
           <div class="mb-3">
             <label for="username" class="col-form-label">Username:</label>
@@ -86,7 +91,7 @@
         <h5 class="modal-title" id="myRegistrationLabel">Registrieren</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="scripts/signup.php" method="post">
+      <form action="includes/signup.php" method="post">
       <div class="modal-body">
           <div class="mb-3">
             <label for="username" class="col-form-label">Username:</label>
