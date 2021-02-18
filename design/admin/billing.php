@@ -1,3 +1,6 @@
+<?php
+    session_start();
+?>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -31,27 +34,27 @@
             if (isset($_POST['billingChange']) && isset($_SERVER['REQUEST_URI'])){
                 switch ($_POST['billingChange']) {
                     case 'new':
-                        $billingDate = date('Y-m-d H:i:s',strtotime($_POST['billingDateInput']));
-                        $insert = $dbo -> prepare ("INSERT INTO billing (billingDate, billingCondition, billingStatus, reservation_idReservation) VALUES ('".$billingDate."','".$_POST['billingConditionInput']."','Open','".$_POST['idReservationInput']."')");
-                        $insert -> execute();
-                        $update = $dbo -> prepare ("UPDATE reservation set paid = 1 where idReservation = ".$_POST['idReservationInput']);
-                        $update -> execute();
+                        $billingDate = date('Y-m-d H:i:s',strtotime($_POST['billingDate']));
+                        $insert = $dbo -> prepare ("INSERT INTO billing (billingDate, billingCondition, billingStatus, reservation_idReservation) VALUES (:billingDate,:billingCondition,'Open',:idReservation)");
+                        $insert -> execute(array('billingDate' => $billingDate, 'billingCondition' => $_POST['billingCondition'], 'idReservation' => $_POST['idReservation']));
+                        try {
+                            $update = $dbo -> prepare ("UPDATE reservation set paid = 1 where idReservation = :idReservation");
+                            $update -> execute(array('idReservation' => $_POST['idReservation']));
+                        } catch (Exception $e) {
+                            echo 'Caught exception: ',  $e->getMessage(), "\n";
+                        }
+                        
                         break;
                     case 'paid':
-                        $update = $dbo -> prepare ("UPDATE billing set billingStatus = 'paid' where idBilling = ".$_POST['idBilling']);
-                        $update -> execute();
+                        $update = $dbo -> prepare ("UPDATE billing set billingStatus = 'paid' where idBilling = :idBilling");
+                        $update -> execute(array('idBilling' => $_POST['idBilling']));
                         break;
-                        
                     default:
                         break;
                 }
-                header ('Location: ' . $_SERVER['REQUEST_URI']);
-                exit();
             } 
         ?>
         
-        
-        <a href="./sendbill.php" class="btn btn-primary">Rechnung stellen</a>
         <table class="table table-hover table-striped text-center">
             <thead>
             <tr>
@@ -94,7 +97,7 @@
                             echo('<input type="hidden" name="idBilling" id="idBilling" value="'.$row['idBilling'].'"/>');
                             echo('<input type="hidden" name="idReservation" id="idReservation" value="'.$row['idReservation'].'"/>');
                             echo('<input type="hidden" name="billingChange" id="billingChange" value="paid"/>');
-                            echo('<button type="submit">Rechnung bezahlt</button>');
+                            echo('<button class="btn btn-primary" type="submit">Rechnung bezahlt</button>');
                             echo('</form>');
                         }
                         echo('</td>');

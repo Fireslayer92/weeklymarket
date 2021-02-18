@@ -1,3 +1,6 @@
+<?php
+    session_start();
+?>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -18,25 +21,23 @@
             switch ($_POST['approvalChange']) {
                 case 'new':
                     $approvalDate = date('Y-m-d H:i:s',strtotime($_POST['approvalDate']));
-                    $insert = $dbo -> prepare ("INSERT INTO approval (date, status, reservation_idReservation) VALUES ('".$approvalDate."','".$_POST['approved']."','".$_POST['idReservation']."')");
-                    $insert -> execute();
+                    $insert = $dbo -> prepare ("INSERT INTO approval (date, status, reservation_idReservation) VALUES (:approvalDate,:approved,:idReservation)");
+                    $insert -> execute(array('approvalDate' => $approvalDate, 'approved' => $_POST['approved'], 'idReservation' => $_POST['idReservation']));
                     break;
                 
                 case 'approved':
-                    $update = $dbo -> prepare ("UPDATE boothprovider set status = 'approved' where idProvider = '".$_POST['idProvider']."'");
-                    $update -> execute();
+                    $update = $dbo -> prepare ("UPDATE boothprovider set status = 'approved' where idProvider = :idProvider");
+                    $update -> execute(array('idProvider' => $_POST['idProvider']));
                     break;
                 
                 case 'blocked':
-                    $update = $dbo -> prepare ("UPDATE boothprovider set status = 'blocked' where idProvider = '".$_POST['idProvider']."'");
-                    $update -> execute();
+                    $update = $dbo -> prepare ("UPDATE boothprovider set status = 'blocked' where idProvider = :idProvider");
+                    $update -> execute(array('idProvider' => $_POST['idProvider']));
                     break;
 
                 default:
                     break;
             }
-            header ('Location: ' . $_SERVER['REQUEST_URI']);
-            exit();
             
         } 
     ?>
@@ -45,6 +46,7 @@
     
     <?php
         include '../includes/nav.php';
+        echo($_SESSION['privilege']);
     ?>
     <h1>Welcome to the Admin-Interface</h1>
     <h2>Qualit&auml;tspr&uuml;fung</h2>
