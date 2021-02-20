@@ -13,6 +13,26 @@
     <meta charset="UTF-8">
     <?php
         include '../includes/db.php';
+        $dbo = createDbConnection();
+        if (isset($_POST['providerChange']) && isset($_SERVER['REQUEST_URI'])){
+            switch ($_POST['providerChange']) {   
+
+                case 'passed':
+                    $update = $dbo -> prepare ("UPDATE boothprovider set qCheck = 1 where idProvider = :idProvider");
+                    $update -> execute(array('idProvider' => $_POST['idProvider']));
+                    break;
+                
+                case 'blocked':
+                    $update = $dbo -> prepare ("UPDATE boothprovider set status = 'blocked' where idProvider = :idProvider");
+                    $update -> execute(array('idProvider' => $_POST['idProvider']));
+                    break;
+
+                default:
+                    break;
+            }
+            
+        } 
+
     ?>
 </head>
 <body>
@@ -44,8 +64,7 @@
         <thead>
         <tbody id='filterTable'>
         <?php
-            $dbo = createDbConnection();
-            $stmt = $dbo -> prepare("SELECT bp.name as 'name', bp.status as 'status', bp.qcheck as 'qCheck', b.address as 'bAddress', b.plz as 'bPLZ', b.city as 'bCity', b.email as 'bEmail', b.phone as 'bPhone', c.address as 'cAddress', c.plz as 'cPLZ', c.city as 'cCity', c.email as 'cEmail', c.phone as 'cPhone' from boothprovider bp join address b on b.idAddress = bp.billing join address c on c.idAddress = bp.correspondence");
+            $stmt = $dbo -> prepare("SELECT bp.idProvider as 'idProvider', bp.name as 'name', bp.status as 'status', bp.qcheck as 'qCheck', b.address as 'bAddress', b.plz as 'bPLZ', b.city as 'bCity', b.email as 'bEmail', b.phone as 'bPhone', c.address as 'cAddress', c.plz as 'cPLZ', c.city as 'cCity', c.email as 'cEmail', c.phone as 'cPhone' from boothprovider bp join address b on b.idAddress = bp.billing join address c on c.idAddress = bp.correspondence");
             $stmt -> execute();
             $result = $stmt -> fetchAll();
             foreach ($result as $row){
@@ -91,6 +110,31 @@
                 echo('<td>');
                 echo($row['cPhone']);
                 echo('</td>');
+                echo('<td>');
+                if($row['qCheck'] == 0 && $row['status'] != 'blocked'){
+                    echo('<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#check'.$row['idProvider'].'">Qualit&auml;tscheck hinzuf&uuml;gen</button>');
+                }
+                echo('</td>');
+                echo('<div class="modal fade" id="check'.$row['idProvider'].'" tabindex="-1" role="dialog">');
+                    echo('<div class="modal-dialog" role="document">');
+                        echo('<div class="modal-content">');
+                            echo('<div class="modal-header">');
+                                echo('<label><b>Qualitaetscheck f&uuml;r'.$row['name'].' hinzuf&uuml;gen</b></label><br/>');
+                            echo('</div>');
+                            echo('<div class="modal-body">');
+                                echo('<label>Hat '.$row['name'].' die Pr&uuml;fung bestanden? <br/></label>');
+                                echo('<form method="POST" action="provider.php">');
+                                    echo('<input type hidden name="idProvider" id="idProvider" value="'.$row['idProvider'].'"/><br/>');
+                                    echo('<div class="modal-footer">');
+                                        echo('<button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>&nbsp;');
+                                        echo('<button type="submit" name="providerChange" value="passed" class="btn btn-primary">Ja - freischalten</button>');
+                                        echo('<button type="submit" name="providerChange" value="blocked" class="btn btn-danger">Nein - blockieren</button>');
+                                        echo('</form>');
+                                    echo('</div>');
+                            echo('</div>');
+                        echo('</div>');
+                    echo('</div>');
+                echo('</div>');
                 echo('</tr>');
             }
         ?>
