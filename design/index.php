@@ -16,6 +16,42 @@ session_start();
     <title>Wochenmarkt</title>
   </head>
 <body>
+<?php
+        if (isset($_SESSION['idUser']))
+        {
+
+        
+          if ( 'admin' == $_SESSION['privilege'] )
+          {
+            header('Location: admin/reservations.php');
+          }
+
+          elseif ( 'side' == $_SESSION['privilege'] )
+          {
+            header('Location: provider/quali.php');
+          }
+          elseif ( 'qualified' == $_SESSION['privilege'])
+          {
+            header('Location: ../abo.php');
+          }
+          elseif ( 'provider' == $_SESSION['privilege'] )
+          {
+            header('Location: ../reservation_provider.php');
+          }
+          else
+          {
+            header('Location: /index.php');
+          }
+      }
+    if (isset($_SESSION['message']))
+    { 
+      
+      
+     echo $_SESSION['message'];
+      unset($_SESSION['message']);
+    }
+      
+?>
   <!--Navigation-->
 <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
   <div class="container-fluid">
@@ -34,7 +70,7 @@ session_start();
           <li class="nav-item">
             <?php
                 if (isset($_SESSION['username'])) {
-                  echo '<a href="scripts/logout.php" class="nav-link">Log out</a>';
+                  echo '<a href="includes/logout.php" class="nav-link">Log out</a>';
                 }
                 else {
                   echo '<a href="#login" class="nav-link" data-bs-toggle="modal" data-bs-target="#myLogin">Login</a>';
@@ -55,7 +91,7 @@ session_start();
         <h5 class="modal-title" id="myLoginLabel">Login</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="scripts/login.php" method="post">
+      <form action="includes/login.php" method="post">
       <div class="modal-body">
           <div class="mb-3">
             <label for="username" class="col-form-label">Username:</label>
@@ -84,7 +120,7 @@ session_start();
         <h5 class="modal-title" id="myRegistrationLabel">Registrieren</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="scripts/signup.php" method="post">
+      <form action="includes/signup.php" method="post">
       <div class="modal-body">
           <div class="mb-3">
             <label for="username" class="col-form-label">Username:</label>
@@ -98,6 +134,13 @@ session_start();
             <label for="password-repeat" class="col-form-label">Passwort wiederholen:</label>
             <input type="password" class="form-control" id="password-repeat" name="password-repeat" required="required">
           </div>
+          <div class="mb-3">
+            <label for="type" class="col-form-label">Profil Typ:</label>
+            <select class="form-select" id="profile_typ" name="profile_typ" aria-label="Default select example" required="required">
+              <option value="provider">Markstand Betreiber</option>
+              <option value="side">Standort</option>
+            </select>
+          </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-primary" id="userRegistration" type="submit" name="singup">Registrieren</button>
@@ -106,6 +149,7 @@ session_start();
     </div>
   </div>
 </div>
+
 
 
 <!--Image Slider -->
@@ -222,8 +266,8 @@ session_start();
 
 
 
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+ 
 </body>
 </html>
 

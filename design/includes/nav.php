@@ -8,30 +8,38 @@
       <div class="collapse navbar-collapse justify-content-end" id="navMenue">
         <ul class="navbar-nav ml-auto justify-content-end">
         <?php
-        if ( 'admin' == $_SESSION['privileges'] ) {
+        if(isset($_SESSION['idUser']))
+        {
+          if ( 'admin' == $_SESSION['privilege'] ) {
+            
+            echo ('<li class="nav-item dropdown">');
+            echo ('<a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">');
+            echo ('<span class="navbar-toggler-icon"></span> Menü');
+            echo ('</a>');
+            echo ('<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">');
+            echo ('<li><a class="dropdown-item" aria-current="page" href="./billing.php">Rechnungen</a></li>');
+            echo ('<li><a class="dropdown-item" href="./reservations.php">Reservationen</a></li>');
+            echo ('<li><a class="dropdown-item" href="./sites.php">Standorte</a></li>');
+            echo ('<li><a class="dropdown-item" href="./provider.php">Standanbieter</a></li>');
+            echo ('<li><a class="dropdown-item" href="./checks.php">Pr&uuml;fungen</a></li>');
+            echo ('</ul>');
+            echo ('</li>');
+          }        
+        }
           
-          echo ('<li class="nav-item dropdown">');
-          echo ('<a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">');
-          echo ('<span class="navbar-toggler-icon"></span> Menü');
-          echo ('</a>');
-          echo ('<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">');
-          echo ('<li><a class="dropdown-item" aria-current="page" href="./billing.php">Rechnungen</a></li>');
-          echo ('<li><a class="dropdown-item" href="./reservations.php">Reservationen</a></li>');
-          echo ('<li><a class="dropdown-item" href="./sites.php">Standorte</a></li>');
-          echo ('<li><a class="dropdown-item" href="./provider.php">Standanbieter</a></li>');
-          echo ('<li><a class="dropdown-item" href="./checks.php">Pr&uuml;fungen</a></li>');
-          echo ('</ul>');
-        echo ('</li>');
-         }        
         ?>
           <li class="nav-item active">
-            <a class="nav-link" href="index.php">Home</a>
+            <a class="nav-link" href="../index.php">Home</a>
           </li>
           <li class="nav-item">
             <?php
-                if (isset($_SESSION['username'])) {
+                if(isset($_SESSION['id']))
+                {
+                  if ( 'registered' == $_SESSION['privilege'] ) {
                   echo '<a href="hoster.php" class="nav-link">Marktstand buchen</a>';
+                  }
                 }
+                
               ?>
           </li>
           <li class="nav-item">
@@ -40,7 +48,7 @@
           <li class="nav-item">
             <?php
                 if (isset($_SESSION['username'])) {
-                  echo '<a href="includes/logout.php" class="nav-link">Log out</a>';
+                  echo '<a href="../includes/logout.php" class="nav-link">Log out</a>';
                 }
                 else {
                   echo '<a href="#login" class="nav-link" data-bs-toggle="modal" data-bs-target="#myLogin">Login</a>';
@@ -62,7 +70,7 @@
         <h5 class="modal-title" id="myLoginLabel">Login</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="includes/login.php" method="post">
+      <form action="../includes/login.php" method="post">
       <div class="modal-body">
           <div class="mb-3">
             <label for="username" class="col-form-label">Username:</label>
@@ -115,3 +123,5 @@
 </div>
 <br>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+
