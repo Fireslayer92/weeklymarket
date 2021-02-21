@@ -213,7 +213,7 @@
                                               echo('</tr>');
                                               echo('<tr>');
                                                   echo('<td>Zahlungskonditionen in Tagen</td>');
-                                                  echo('<td><input type="text" name="billingCondition" id="billingCondition" value="30"/></td>');
+                                                  echo('<td><input type="number" class="form-control" name="billingCondition" id="billingCondition" value="30"/></td>');
                                               echo('</tr>');
                                               echo('<tr>');
                                                   echo('<td>Rechnungsdatum</td>');

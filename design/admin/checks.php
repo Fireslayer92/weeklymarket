@@ -123,11 +123,11 @@
                             echo('<div class="modal-body">');
                                 echo('<form method="POST" action="checks.php">');
                                     echo('<label for="approvalDate">Datum</label><br/>');
-                                    echo('<input type="date" name="approvalDate" id="approvalDate" value="'.date('Y-m-d').'"/><br/>');
+                                    echo('<input type="date" name="approvalDate" class="form-control" id="approvalDate" value="'.date('Y-m-d').'"/><br/>');
                                     echo('<label>Pr&uuml;fung erfolgreich</label><br/>');
                                     echo('<input type="radio" id="approved" name="approved" value="1">');
                                     echo('<label for="approved">Ja</label><br/>');
-                                    echo('<input type="radio" id="notapproved" name="approved" value="0">');
+                                    echo('<input type="radio" id="approved" name="approved" value="0">');
                                     echo('<label for="notApproved">Nein</label><br/>');
                                     echo('<input type hidden name="idReservation" id="idReservation" value="'.$row['idReservation'].'"/><br/>');
                                     echo('<input type hidden name="approvalChange" id="approvalChange" value="new"/>');
