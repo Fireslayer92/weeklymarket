@@ -14,7 +14,23 @@
 			crossorigin="anonymous"></script>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
 		<script src="../includes/jquery.tablesort.min.js"></script>
-		<script src="../includes/script.js"></script>
+        <script src="../includes/script.js"></script>
+        <script>
+            $(function() { 
+                $(".providerSelect").change(function(){ 
+                    var element = $(this).find('option:selected'); 
+                    var status = element.attr("status"); 
+
+                    if (status == 'trial'){
+                    $( '.trial' ).show();
+                    $( '.approved').hide();
+                    } else {
+                    $( '.trial' ).hide();
+                    $( '.approved').show();
+                    }
+                }).trigger('change'); 
+            });
+        </script>
 		<title>Weeklymarket</title>
 		<meta charset="UTF-8">
 		<?php
@@ -24,7 +40,183 @@
 			} //check privileges
 			setlocale (LC_ALL, '');
 			include '../includes/db.php';
-			$dbo = createDbConnection();
+            $dbo = createDbConnection();
+            
+            if (isset($_POST['reservation']) && isset($_SERVER['REQUEST_URI'])){
+                     
+                //new date
+                $query_date = $_POST['Datefrom'];
+                $date = new DateTime($query_date);
+                $resrduration = $_POST['flexRadioDefault'];
+                
+                
+                
+
+                //First day of month
+                $date->modify('first day of this month');
+                $firstday= $date->format('Y-m-d');
+                
+                //SQL Select reservation
+                $resstmt1 = $dbo -> prepare("SELECT bp.name as 'boothprovider' , bp.qCheck as 'qCheck', s.idSite as 'idSite', r.fromDate as 'fromdate', r.toDate as 'todate', s.spaces as 'spaces', r.boothProvider_idProvider as 'idProvider' FROM reservation r join boothProvider bp on bp.idProvider = r.boothProvider_idProvider join site s on s.idSite = r.site_idSite WHERE bp.idProvider like :idProvider");
+                $resstmt1 -> execute(array("idProvider"=>$_POST['idProvider']));
+                $result1 = $resstmt1 -> fetchAll();
+                //SQL Select reservation for user reservations
+                $activerescount = $dbo -> prepare("SELECT count(r.idReservation) as count from reservation r join boothProvider bp on bp.idProvider = r.boothProvider_idProvider where toDate >= date(now()) AND bp.idProvider like :idProvider");
+                $activerescount -> execute(array("idProvider"=>$_POST['idProvider']));
+                $resultactivecount = $activerescount -> fetch();
+                //SQL Select reservation for three x 6 month Reservation
+                $activerescount2 = $dbo -> prepare("SELECT * from reservation r join boothProvider bp on bp.idProvider = r.boothProvider_idProvider where toDate >= date(now()) AND bp.idProvider like :idProvider");
+                $activerescount2 -> execute();
+                $resultactivecount1 = $activerescount2 -> fetchAll();
+                //Period between fromDate to toDate
+                $interval=0;
+
+                foreach($resultactivecount1 as $rows)
+                {
+                     $fromDate=date_create($rows['fromDate']);
+                     $toDate=date_create($rows['toDate']);
+                     $diff=date_diff($fromDate,$toDate);
+                     $interval = $diff->format("%m");
+                     
+                }
+              
+                //call for variable for 3x 6 month
+                if($interval >6)
+                {
+                    $threeimport = true;
+                }
+                else
+                {
+                    $threeimport = false;
+                }
+                //first reservation import
+                if(empty($result1))
+                {
+                   //SQL Select boothprovider
+                    $provstmt = $dbo -> prepare("SELECT * FROM boothprovider WHERE idProvider like :idProvider");
+                    $provstmt -> execute(array("idProvider"=>$_POST['idProvider']));
+                    $provresult = $provstmt -> fetchAll();
+                    foreach ($provresult as $row3)
+                    {
+                        if ($_POST['flexRadioDefault'] == 2){
+                            $trail=1;
+                        } else{
+                            $trail=0;
+                        }
+                            //Last day of month
+                            $query_date2 = $_POST['Datefrom'];
+                            $date2 = new DateTime($query_date2);
+                            $date2->modify('last day of '.$_POST['flexRadioDefault'].' month');
+                            $lastday= $date2->format('Y-m-d');
+                        //Variable idProvider
+                        $idprov = $row3['idProvider'];
+                    }
+                        //SQL SELECT site
+                        $spaces =$dbo -> prepare("SELECT spaces FROM site where idSite like :idSite");
+                        $spaces -> execute(array('idSite' => $_POST['idSite']));
+                        $resultspaces = $spaces -> fetch();
+                        //SQL Count reservation
+                        $resstmt = $dbo -> prepare("select count(idReservation) as count from reservation where fromDate <= :datefrom and toDate >= :dateto  and site_idSite = :siteID");
+                        $resstmt -> execute(array('datefrom' => $firstday, 'dateto' => $lastday,'siteID' => $_POST['idSite']));
+                        $resresult = $resstmt -> fetch();
+                        $freeSpaces1 = $resultspaces['spaces'] - $resresult['count'];
+                        
+                        //site spaces free
+                        if($freeSpaces1 > 0)
+                        { 
+                            //SQL INSERT reservation
+                            $insert = $dbo -> prepare ("INSERT INTO reservation (boothProvider_idProvider, site_idSite, fromDate, toDate, trail, paid) VALUES (:boothProvider_idProvider, :site_idSite, :fromDate, :toDate, :trail,'0')");
+                            $insert -> execute(array( 'boothProvider_idProvider' => $idprov, 'site_idSite' => $_POST['idSite'], 'fromDate' =>   $firstday, 'toDate' => $lastday, 'trail' => $trail));
+                            //insert successful
+                            if($insert== true) {
+                                //back to reservation
+                                header("Location: ../admin/reservations.php?");
+                                exit();
+                            }
+                            else
+                            {
+                                //back to reservation
+                                header("Location: ../admin/reservations.php?reservation=false");
+                                exit();
+                            }
+                        }
+                        else
+                        {
+                                //back to reservation
+                                header("Location: ../admin/reservations.php?reservation=keine_freien_pleatze4");
+                                exit();
+                        }             
+                }
+               //loop for max reservations
+                elseif ($_POST['flexRadioDefault']==5 && $resultactivecount['count'] < 3 && $threeimport == false || $_POST['flexRadioDefault']==12 && $resultactivecount['count'] < 1 || $_POST['flexRadioDefault']==2 && $resultactivecount['count'] < 1)
+                {
+                    foreach ($result1 as $row2)
+                    {
+                        //Qualiti check
+                        if($row2['qCheck']==0)
+                        {
+                            $trail=1;
+                            //Last day of month
+                            $query_date2 = $_POST['Datefrom'];
+                            $date2 = new DateTime($query_date2);
+                            $date2->modify('last day of 1 month');
+                            $lastday= $date2->format('Y-m-d');         
+                        }
+                        else
+                        {
+                            $trail=0;
+                            //Last day of month
+                            $query_date2 = $_POST['Datefrom'];
+                            $date2 = new DateTime($query_date2);
+                            $date2->modify('last day of '.$_POST['flexRadioDefault'].' month');
+                            $lastday= $date2->format('Y-m-d');
+                        }
+                                //SQL SELECT count reservations
+                                $idprov = $row2['idProvider'];
+                                $resstmt = $dbo -> prepare("select count(idReservation) as count from reservation where fromDate <= :datefrom and toDate >= :dateto  and site_idSite = :siteID");
+                                $resstmt -> execute(array('datefrom' => $firstday, 'dateto' => $lastday,'siteID' => $_POST['idSite']));
+                                $resresult = $resstmt -> fetch();
+                                $freeSpaces = $row2['spaces'] - $resresult['count'];
+                        
+                        //free spaces site        
+                        if($freeSpaces > 0)
+                        { 
+                            //insert reservation
+                            $insert = $dbo -> prepare ("INSERT INTO reservation (boothProvider_idProvider, site_idSite, fromDate, toDate, trail, paid) VALUES (:boothProvider_idProvider, :site_idSite, :fromDate, :toDate, :trail,'0')");
+                            $insert -> execute(array( 'boothProvider_idProvider' => $idprov, 'site_idSite' => $_POST['idSite'], 'fromDate' =>   $firstday, 'toDate' => $lastday, 'trail' => $trail));
+                            if($insert== true) {
+                                //back to reservation
+                                header("Location: ../admin/reservations.php?");
+                                exit();
+                            }
+                            else
+                            {   
+                                //back to reservation
+                                header("Location: ../admin/reservations.php?reservation=false");
+                                exit();
+                            } 
+                        }
+                        else
+                        {
+                                //back to reservation
+                                header("Location: ../admin/reservations.php?reservation=keine_freien_pleatze2");
+                                exit();
+                        }       
+                    }
+                    
+                }
+                else
+                {
+                                //back to reservation
+                                header("Location: ../admin/reservations.php?zu_viele_aktive_reservatioen");
+                                exit();
+                }
+            }
+
+
+
+
+
 			?>
 	</head>
 	<body>
@@ -47,6 +239,7 @@
 							    echo('<div class="card">');
                                     echo('<div class="card-header" id="heading'.$row['idSite'].'">');
                                         echo('<button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#overview'.$row['idSite'].'" aria-expanded="true" aria-controls="overview'.$row['idSite'].'">'.$row['name'].'</button>');
+                                        echo('<button class="btn btn-primary" type="submit" data-toggle="modal" data-target="#reservation_prov'.$row['idSite'].'">Standplatz Reservieren</button>');
                                     echo('</div>'); //<div class="card-header" id="heading'.$row['idSite'].'">'
                                     echo('<div id="overview'.$row['idSite'].'" class="collapse" aria-labelledby="heading'.$row['idSite'].'" data-parent="#overview">');
                                         echo('<div class="card-body">');
@@ -88,7 +281,87 @@
                                     echo('</div>'); //<div id="overview'.$row['idSite'].'" class="collapse" aria-labelledby="heading'.$row['idSite'].'" data-parent="#overview">
 							    echo('</div>'); //<div class="card">
 							} //add extendable card for each site
-							
+                            
+                            // Modal reservation
+                                //SQL SELECT site
+                                $idstmt = $dbo -> prepare ("SELECT idSite from site");
+                                $idstmt -> execute();
+                                $idresult = $idstmt -> fetchAll();
+                                foreach ($idresult as $idrow){
+                                    //SQL SELECT site
+                                    $prov2stmt = $dbo -> prepare ("SELECT * from site where idSite = :idSite");
+                                    $prov2stmt -> execute(array('idSite' => $idrow['idSite']));
+                                    $prov2Row = $prov2stmt -> fetch();
+                                        echo('<form method="POST" action="./reservations.php">');
+                                        echo('<div class="modal fade" id="reservation_prov'.$idrow['idSite'].'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">');
+                                        echo('<div class="modal-dialog modal-notify modal-success modal-fluid modal-dialog-centered" role="document">');
+                                        echo('<div class="modal-content">');
+                                        echo('<div class="modal-header">');
+                                        echo('<b>Standort reservieren</b>');
+                                        echo('</div>');
+                                        echo('<div class="modal-body">');
+                                                echo('<table class="table">');
+                                                echo('<tbody>');
+                                                    
+                                                    echo('<tr>');
+                                                        echo('<td>Standort</td>');
+                                                        echo('<td>'.$prov2Row['name'].'</td>');
+                                                    echo('</tr>');
+                                                    echo('<tr>');
+                                                        echo('<td>Start Monat</td>');
+                                                        echo('<td><input type="date" name="Datefrom" id="datepicker" required="required"/></td>');
+                                                    echo('</tr>');
+                                                    echo('<tr>');
+                                                    echo('<tr>');
+                                                        echo('<td>Standanbieter</td>');
+                                                        echo('<td><select class="providerSelect" name="idProvider">');
+                                                            $provstmt = $dbo -> prepare("SELECT * FROM boothprovider WHERE qCheck = 1 and status != 'blocked'");
+                                                            $provstmt -> execute();
+                                                            $provresult = $provstmt -> fetchAll();
+                                                            foreach ($provresult as $providerRow){
+                                                                echo('<option value='.$providerRow['idProvider'].' status="'.$providerRow['status'].'">'.$providerRow['name'].'</option>');
+                                                            }
+                                                        echo('</select></td>');
+                                                    echo('</tr>');
+                                                    echo('<tr>');
+                                                        echo('<td>Mietdauer</td>');
+                                                            echo('<td><div class="approved" style="display:none;">');
+                                                            echo('<div class="form-check">');
+                                                            echo('<input class="form-check-input" type="radio" name="flexRadioDefault" id="six_month" value="5" checked>');
+                                                            echo('<label class="form-check-label" for="flexRadioDefault1">');
+                                                            echo(' &nbsp; 6 Monate');
+                                                            echo('</label>');
+                                                            echo(' </div>');
+                                                            echo('<div class="form-check">');
+                                                            echo('<input class="form-check-input" type="radio" name="flexRadioDefault" id="twelve_month" value="12">');
+                                                            echo('<label class="form-check-label" for="flexRadioDefault2">');
+                                                            echo('12 Monate');
+                                                            echo('</label>');
+                                                            echo('</div>');
+                                                            echo('</div>');
+                                                            echo('<div class="trial" class="form-check" style="display:none;">');
+                                                            echo('<input class="form-check-input" type="radio" name="flexRadioDefault" id="trail" value="2" checked>');
+                                                            echo('<label class="form-check-label" for="flexRadioDefault3">');
+                                                            echo('2 Monate Probemiete');
+                                                            echo('</label>');
+                                                            echo(' </div></td>');                                                       
+                                                echo('</tr>');
+                                                echo('</tbody>');
+                                                echo('</table>');
+                                                echo('</div>');
+                                                //button exit and reservation
+                                                echo('<div class="modal-footer justify-content-center">');
+                                                echo('<button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>&nbsp;');
+                                                echo('<input type hidden name="idSite" id="idSite" value="'.$prov2Row['idSite'].'"/>');
+                                                echo('<button type="submit" class="btn btn-primary" name="reservation">Marktplatz reservieren</button>');
+                                                echo('</div>');
+                                        echo('</div>');
+                                        echo('</div>');
+                                        echo('</div>');
+                                        echo('</form>');
+                                    
+                                }
+
 							?>
 					</div> <!-- overview over all reservations by site -->
 					<br/>
