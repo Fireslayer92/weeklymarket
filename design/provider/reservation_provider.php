@@ -52,7 +52,7 @@
                     $firstday= $date->format('Y-m-d');
                     
                     //SQL Select reservation
-                    $resstmt1 = $dbo -> prepare("SELECT bp.name as 'boothprovider' , bp.qCheck as 'qCheck', s.idSite as 'idSite', r.fromDate as 'fromdate', r.toDate as 'todate', s.spaces as 'spaces', r.boothProvider_idProvider as 'idProvider' FROM reservation r join boothProvider bp on bp.idProvider = r.boothProvider_idProvider join site s on s.idSite = r.site_idSite WHERE bp.user_idUser like $idUser");
+                    $resstmt1 = $dbo -> prepare("SELECT bp.name as 'boothprovider' , bp.status as 'status', s.idSite as 'idSite', r.fromDate as 'fromdate', r.toDate as 'todate', s.spaces as 'spaces', r.boothProvider_idProvider as 'idProvider' FROM reservation r join boothProvider bp on bp.idProvider = r.boothProvider_idProvider join site s on s.idSite = r.site_idSite WHERE bp.user_idUser like $idUser");
                     $resstmt1 -> execute();
                     $result1 = $resstmt1 -> fetchAll();
                     //SQL Select reservation for user reservations
@@ -95,7 +95,7 @@
                         {
                             
                             //QualitiCkeck User
-                            if($row3['qCheck']==0)
+                            if($row3['status']=='trial')
                             {
                                 $trail=1;
                                 //Last day of month
@@ -159,7 +159,7 @@
                         foreach ($result1 as $row2)
                         {
                             //Qualiti check
-                            if($row2['qCheck']==0)
+                            if($row2['status']=='trial')
                             {
                                 $trail=1;
                                 //Last day of month
@@ -330,7 +330,7 @@
                                                     echo('<tr>');
                                                         echo('<td>Mietdauer</td>');
                                                         //loop trail
-                                                        if($row3['qCheck']==1)
+                                                        if($row3['status']=='approved')
                                                         {
                                                             //radio button
                                                             echo('<td><div class="form-check">');
