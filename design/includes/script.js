@@ -8,9 +8,9 @@ $(document).ready(function(){ //check if document is ready (page is being shown)
     $('table').tablesort(); //sort table filtertable
   });
 
-  $(document).ready(function(){
+  $(document).ready(function(){ //if error show error modal
     $("#error").modal('show');
   });
-  $(document).on('hidden.bs.modal','#error', function () {
+  $(document).on('hidden.bs.modal','#error', function () { //on hide of error modal, refresh page to clear error
     window.location = window.location.href;
   });

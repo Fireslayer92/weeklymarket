@@ -308,14 +308,14 @@
                                                     echo('<tr>');
                                                     echo('<tr>');
                                                         echo('<td>Standanbieter</td>');
-                                                        echo('<td><select class="providerSelect" name="idProvider">');
+                                                        echo('<td><select class="providerSelect" name="idProvider">'); //add dropdown for provider selection
                                                             $provstmt = $dbo -> prepare("SELECT * FROM boothprovider WHERE qCheck = 1 and status != 'blocked'");
                                                             $provstmt -> execute();
                                                             $provresult = $provstmt -> fetchAll();
                                                             foreach ($provresult as $providerRow){
                                                                 echo('<option value='.$providerRow['idProvider'].' status="'.$providerRow['status'].'">'.$providerRow['name'].'</option>');
                                                             }
-                                                        echo('</select></td>');
+                                                        echo('</select></td>'); //add dropdown for provider selection
                                                     echo('</tr>');
                                                     echo('<tr>');
                                                         echo('<td>Mietdauer</td>');
