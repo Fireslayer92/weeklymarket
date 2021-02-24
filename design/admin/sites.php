@@ -16,7 +16,7 @@
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
 		<script src="../includes/jquery.tablesort.min.js"></script>
 		<script src="../includes/script.js"></script>
-		<title>Weeklymarket</title>
+		<title>Wochenmarkt</title>
 		<meta charset="UTF-8">
 		<?php
 			if ( 'admin' != $_SESSION['privilege'] ) { //check privileges

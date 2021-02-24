@@ -31,7 +31,7 @@
                 }).trigger('change'); 
             });
         </script>
-		<title>Weeklymarket</title>
+		<title>Wochenmarkt</title>
 		<meta charset="UTF-8">
 		<?php
 			if ( 'admin' != $_SESSION['privilege'] ) { //check privileges
