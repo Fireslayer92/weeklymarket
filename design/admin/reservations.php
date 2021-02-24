@@ -41,7 +41,7 @@
 			setlocale (LC_ALL, '');
 			include '../includes/db.php';
             $dbo = createDbConnection();
-            
+            $errt = '';
             if (isset($_POST['reservation']) && isset($_SERVER['REQUEST_URI'])){
                      
                 //new date
@@ -130,21 +130,18 @@
                             //insert successful
                             if($insert== true) {
                                 //back to reservation
-                                header("Location: ../admin/reservations.php?");
-                                exit();
+                                header("Location: ../admin/reservations.php");
                             }
                             else
                             {
-                                //back to reservation
-                                header("Location: ../admin/reservations.php?reservation=false");
-                                exit();
+                                //give error to errorhandling
+                                $errt .= 'Bei der Reservation ist etwas schiefgelaufen, versuchen Sie es erneut.';
                             }
                         }
                         else
                         {
-                                //back to reservation
-                                header("Location: ../admin/reservations.php?reservation=keine_freien_pleatze4");
-                                exit();
+                                //give error to errorhandling
+                                $errt .= 'Leider sind an zu ihrem gew&auml;hlten Zeitpunkt keine Pl&auml;tze mehr verf&uuml;gbar';
                         }             
                 }
                //loop for max reservations
@@ -185,22 +182,19 @@
                             $insert = $dbo -> prepare ("INSERT INTO reservation (boothProvider_idProvider, site_idSite, fromDate, toDate, trail, paid) VALUES (:boothProvider_idProvider, :site_idSite, :fromDate, :toDate, :trail,'0')");
                             $insert -> execute(array( 'boothProvider_idProvider' => $idprov, 'site_idSite' => $_POST['idSite'], 'fromDate' =>   $firstday, 'toDate' => $lastday, 'trail' => $trail));
                             if($insert== true) {
-                                //back to reservation
-                                header("Location: ../admin/reservations.php?");
-                                exit();
+                                //give error to errorhandling
+                                header("Location: ../admin/reservations.php");
                             }
                             else
                             {   
-                                //back to reservation
-                                header("Location: ../admin/reservations.php?reservation=false");
-                                exit();
+                                //give error to errorhandling
+                                $errt .= 'Bei der Reservation ist etwas schiefgelaufen, versuchen Sie es erneut.';
                             } 
                         }
                         else
                         {
-                                //back to reservation
-                                header("Location: ../admin/reservations.php?reservation=keine_freien_pleatze2");
-                                exit();
+                                //give error to errorhandling
+                                $errt .= 'Leider sind an zu ihrem gew&auml;hlten Zeitpunkt keine Pl&auml;tze mehr verf&uuml;gbar';
                         }       
                     }
                     
@@ -208,8 +202,7 @@
                 else
                 {
                                 //back to reservation
-                                header("Location: ../admin/reservations.php?zu_viele_aktive_reservatioen");
-                                exit();
+                                $errt .= 'Sie haben bereits zu viele aktive Abos';
                 }
             }
 
@@ -220,7 +213,8 @@
 			?>
 	</head>
 	<body>
-		<?php
+        <?php
+            include '../includes/errorhandling.php'; //include errorhandling
 			include '../includes/nav.php'; //include nav bar
 			?>
 		<div class="container-fluid">

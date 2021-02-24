@@ -14,11 +14,6 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
 		<script src="../includes/jquery.tablesort.min.js"></script>
 		<script src="../includes/script.js"></script>
-		<script>
-		$(document).ready(function(){
-			$("#error").modal('show');
-		});
-		</script>
 		<title>Weeklymarket</title>
 		<meta charset="UTF-8">
 		<?php
@@ -34,7 +29,6 @@
 			    switch ($_POST['userChange']) {   
 			
 					case 'new': //Create new admin User
-						//$errt = '';
 			            if(empty($_POST['username']) || empty($_POST['password']) || empty($_POST['passwordRepeat'])){
 			                $errt .= "Nicht alle Felder ausgef&uuml;llt";
 			            }
@@ -61,7 +55,7 @@
 			                        $result = $stmt->execute(array('username' => $_POST['username'], 'password' => $password_hash));
 			                        
 			                        if(!$result) {        
-			                            $errt -= "Fehler beim speichern des Benutzers";
+			                            $errt .= "Fehler beim speichern des Benutzers";
 			                        }
 			                    }
 			                }
@@ -79,11 +73,11 @@
                                 $stmt->execute(array('idUser' => $_POST['idUser']));
                             }
                             else{
-                                echo('Sie k&ouml;nnen sich nicht selbst l&ouml;schen');
+                                $errt .= 'Sie k&ouml;nnen sich nicht selbst l&ouml;schen';
                             }
 			            }
 			            else {
-			                echo('letzter Admin-Benutzer kann nicht gel&ouml;scht werden');
+			                $errt .= 'letzter Admin-Benutzer kann nicht gel&ouml;scht werden';
 			            }
 			            break; //case delete
 			
@@ -96,26 +90,7 @@
 	</head>
 	<body>
 		<?php
-		if (!empty($errt)){
-			?>
-			<div id="error" class="modal fade" role="dialog"> <!-- Error handling -->
-				<div class="modal-dialog">
-					<div class="modal-content">
-					<div class="modal-header">
-					<p class="text-danger"><b>Fehler</b></p>
-					</div>
-					<div class="modal-body">
-						<?php echo($errt); ?>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" onclick="window.location = window.location.href;">Close</button>
-					</div>
-					</div>
-
-				</div>
-			</div> <!-- Error handling -->
-			<?php
-		}
+			include '../includes/errorhandling.php'; //include errormodal
 			include '../includes/nav.php'; //include nav bar
 			?>
 		<div class="container-fluid">

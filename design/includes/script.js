@@ -7,3 +7,10 @@ $(document).ready(function(){ //check if document is ready (page is being shown)
     });
     $('table').tablesort(); //sort table filtertable
   });
+
+  $(document).ready(function(){
+    $("#error").modal('show');
+  });
+  $(document).on('hidden.bs.modal','#error', function () {
+    window.location = window.location.href;
+  });
