@@ -23,17 +23,17 @@ session_start();
 <?php
         if (isset($_SESSION['idUser']))
         {
-            $firstlogin = $dbo->prepare("SELECT count(user_idUser) FROM boothprovider WHERE user_idUser = :idUser");
+            $firstlogin = $dbo->prepare("SELECT count(user_idUser) as count FROM boothprovider WHERE user_idUser like :idUser");
             $firstlogin -> execute(array('idUser' => $_SESSION['idUser']));
             $result = $firstlogin->fetch();
-            if($result == 0)
+            if($result['count'] == 0)
             {
               if ( 'provider' == $_SESSION['privilege'] )
               {
                 header('Location: provider/quali.php');
               }
             }
-            $firstloginsite = $dbo->prepare("SELECT count(user_idUser) FROM site WHERE user_idUser = :idUser");
+            $firstloginsite = $dbo->prepare("SELECT count(user_idUser) FROM site WHERE user_idUser like :idUser");
             $firstloginsite -> execute(array('idUser' => $_SESSION['idUser']));
             $resultsite = $firstloginsite->fetch();
             if($resultsite == 0)

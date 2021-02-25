@@ -30,10 +30,11 @@ session_start();
           // If the checkbox is checked, display the output text
           if (checkBox.checked == false){
             text.style.display = "block";
+            $('.reg_input').prop('required',true);
             
           } else {
             text.style.display = "none";
-            $('.reg input').removeClass('required').removeAttr('required');
+            $('.reg_input').prop('required',false);
           }
         }
       </script>
@@ -213,23 +214,23 @@ session_start();
                                   echo('<tbody>');
                                     echo('<tr>');
                                       echo('<td>Rechnungsadresse</td>');
-                                      echo('<td><input class="form-control" type="address" name="rgaddress" id="rgadress" maxlength="200"  /></td>');
+                                      echo('<td><input class="form-control reg_input" type="address" name="rgaddress" id="rgadress" maxlength="200"  /></td>');
                                     echo('</tr>');
                                     echo('<tr>');
                                       echo('<td>Plz</td>');
-                                      echo('<td><input class="form-control" type="number"  name="rgplz" id="rgplz"  style="hidden"/></td>');
+                                      echo('<td><input class="form-control reg_input" type="number"  name="rgplz" id="rgplz"  style="hidden"/></td>');
                                     echo('</tr>');
                                     echo('<tr>');
                                       echo('<td><label>Stadt</label></td>');
-                                      echo('<td><input class="form-control" type="text" name="rgcity" id="rgcity" maxlength="45"  style="hidden"/></td>');                                                                           
+                                      echo('<td><input class="form-control reg_input" type="text" name="rgcity" id="rgcity" maxlength="45"  style="hidden"/></td>');                                                                           
                                     echo('</tr>');
                                     echo('<tr>');
                                       echo('<td><label>E-Mail</label></td>');
-                                      echo('<td><input class="form-control" type="email" name="rgemail" id="rgemail" maxlength="200"  style="hidden"/></td>');                                                                           
+                                      echo('<td><input class="form-control reg_input" type="email" name="rgemail" id="rgemail" maxlength="200"  style="hidden"/></td>');                                                                           
                                     echo('</tr>');
                                     echo('<tr>');
                                       echo('<td><label>Handy</label></td>');
-                                      echo('<td><input class="form-control" type="phone" name="rgphone" id="rgphone" maxlength="20"  style="hidden"/></td>');                                                                           
+                                      echo('<td><input class="form-control reg_input" type="phone" name="rgphone" id="rgphone" maxlength="20"  style="hidden"/></td>');                                                                           
                                     echo('</tr>');
                                   echo('</tbody>');
                                 echo('</table>');
