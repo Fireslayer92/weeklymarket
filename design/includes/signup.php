@@ -5,7 +5,7 @@ if (isset($_POST['singup'])){
     $username = $_POST['username'];
     $password = $_POST['password'];
     $passwordRepeat = $_POST['password-repeat'];
-    $privilege = "new";
+    $privilege = $_POST['profile_typ'];
     
     if(empty($username) || empty($password) || empty($passwordRepeat)){
         header("Location: ../index.php?error=emtyfields&user=".$username. "&mail".$email);
@@ -33,6 +33,7 @@ if (isset($_POST['singup'])){
     }
     
     else {
+        $pdo = createDbConnection();
         $statement = $pdo->prepare("SELECT * FROM user WHERE username = :username");
         $result = $statement->execute(array('username' => $username));
         $user = $statement->fetch();
