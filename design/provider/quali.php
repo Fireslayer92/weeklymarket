@@ -55,6 +55,7 @@ session_start();
         
         ?>
         <?php
+          //insert boothprovider
           if (isset($_POST['import']) && isset($_SERVER['REQUEST_URI']))
           {
             $idUser=$_SESSION['idUser'];
@@ -99,7 +100,7 @@ session_start();
                     }
                     else
                     {
-                      header("Location: ../provider/reservation_provider.php");
+                      header("Location: /provider/reservation_provider.php");
                       exit();
                     }
                   
@@ -121,7 +122,7 @@ session_start();
                     }
                     else
                     {
-                      header("Location: ../provider/reservation_provider.php");
+                      header("Location: /provider/reservation_provider.php");
                       exit();
                     }
                  
@@ -149,7 +150,7 @@ session_start();
         <p>Vielen Dank für Ihre Registrierung auf unserer Plattform. Damit Sie einen Markstand über unsere Webseite betreiben können, müssen Sie ein Qualifikation Verfahren durchlaufen.</p>
         <p>Mit der eingabe alle Dokumente werden Sie überprüft und danach können Sie einen Termin für die Probemonate reservieren.</p>
         <p>Wenn die zwei Monate Probemonat fertig sind und alle Qualifikationen abgeschlossen sind, können Sie entweder einen stand für 12 Monate oder 3 mal einen Stand für 6 Monate reservieren.</p>
-        <p>Nach dem Sie sich kostenpfichtig registriert haben und Ihre Adresse und den Marktstand angegeben haben, erhalten sie von uns einen Brief in den nächsten Tagen.</p>
+        
 
         
 

@@ -33,7 +33,9 @@
         </script>
     </head>
     <body>
-        <?php
+        <?php   
+              //set errorhandler
+              $errt = "";
               //SESSION to variabl
               $idUser = $_SESSION['idUser'];
               //reservation
@@ -151,6 +153,7 @@
                                         //back to provider_reservation
                                         header("Location: ../provider/reservation_provider.php?reservation=false");
                                         exit();
+
                                     }
                                 }
                                 else
@@ -202,21 +205,19 @@
                                 $insert -> execute(array( 'boothProvider_idProvider' => $idprov, 'site_idSite' => $_POST['idSite'], 'fromDate' =>   $firstday, 'toDate' => $lastday, 'trail' => $trail));
                                 if($insert== true) {
                                     //back to provider_reservation
-                                    header("Location: ../provider/reservation_provider.php?");
+                                    header("Location: ../provider/reservation_provider.php");
                                     exit();
                                 }
                                 else
                                 {   
                                     //back to provider_reservation
-                                    header("Location: ../provider/reservation_provider.php?reservation=false");
-                                    exit();
+                                    $errt .= 'Reservierung konnte nicht gespeichert werden.';
                                 } 
                             }
                             else
                             {
                                     //back to provider_reservation
-                                    header("Location: ../provider/reservation_provider.php?reservation=keine_freien_pleatze2");
-                                    exit();
+                                    $errt .= 'Reservierung konnte nicht gespeichert werden.';
                             }       
                         }
                         
@@ -224,13 +225,13 @@
                     else
                     {
                                     //back to provider_reservation
-                                    header("Location: ../provider/reservation_provider.php?zu_viele_aktive_reservatioen");
-                                    exit();
+                                    $errt .= 'Zu viele aktive Reservationen.';
+                                    
                     }
                 }
           //nacbar include
           include '../includes/nav.php';
-           
+          include '../includes/errorhandling.php'; //include errormodal
         ?>
         
         <h2>Reservations</h2>

@@ -1,4 +1,5 @@
 <?php
+session_start();
 if (isset($_POST['login-submit']))
 {
     require 'db.php';
@@ -15,8 +16,10 @@ if (isset($_POST['login-submit']))
         echo ('<button type="button" class="btn-close me-2 m-auto" data-dismiss="toast" aria-label="Close"></button>');
         echo ('</div>');
         echo ('</div>)');
-        echo ('header("Location: ../index.php?error=emptyfields");');
-        echo ('exit();');
+                
+        $_SESSION['message'] ='Es müssen alle Felder ausgefühlt werden.';
+        header("Location: ../index.php");
+        exit();
     }
     else{
             $pdo = createDbConnection();
@@ -26,17 +29,19 @@ if (isset($_POST['login-submit']))
             $user = $statement->fetch();
 
             if (password_verify($password, $user['password'])) {
-                session_start();
+                
                 $_SESSION['idUser'] = $user['idUser'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['privilege'] = $user['privilege'];                
      
-                header("Location: ../index.php?login=success");
+                $_SESSION['message'] ='Erfolgreich Angemeldet.';
+                header("Location: ../index.php");
                 exit();
+                
             } else {
-                session_start();
-                $_SESSION['message'] = 'Username oder Passwort falsch';
-                header("Location: ../index.php?login=error");
+                
+                $_SESSION['message'] ='Benutzername oder Kennwort ist falsch.';
+                header("Location: ../index.php");
                 exit();
             }
         }

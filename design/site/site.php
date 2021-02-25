@@ -25,36 +25,26 @@ session_start();
           // Get the checkbox
           var checkBox = document.getElementById("myCheck");
           // Get the output text
-          var text = document.getElementById("liadress");
+          var text = document.getElementById("rgadress");
 
           // If the checkbox is checked, display the output text
           if (checkBox.checked == false){
             text.style.display = "block";
+            $('.reg_input').prop('required',true);
             
           } else {
             text.style.display = "none";
-            
+            $('.reg_input').prop('required',false);
           }
         }
       </script>
-      <script>
-        $(document).ready(function () {
-          $('.checkbox input').change(function () {
-              if ($(this).is(':checked')) {
-                  $('.req span.cf-required').remove();
-                  $('.req input').removeClass('required').removeAttr('required');
-              } else {
-                  $('.req label').append('<span class="cf-required">*</span>');
-                  $('.req input').attr('required', 'True');
-              }
-            })
-          });
-    </script>
 </head>
 <body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
 
     <?php
+        
+
         if(isset($_SESSION['id']))
         {
           if ( 'new' != $_SESSION['privilege'] ) {
@@ -65,17 +55,18 @@ session_start();
         }
         ?>
         <?php
+          //set errohandler
+          $errt = "";
+          //import site
           if (isset($_POST['import']) && isset($_SERVER['REQUEST_URI']))
           {
             $idUser=$_SESSION['idUser'];
-            $sidestmt = $dbo->prepare("SELECT name FROM site WHERE name = :name");
-            $sidestmt -> execute(array('name' => $_POST['nameSide']));
-            $nameSide = $sidestmt->fetch();
+            $sitestmt = $dbo->prepare("SELECT name FROM site WHERE name = :name");
+            $sitestmt -> execute(array('name' => $_POST['nameSite']));
+            $nameSite = $sitestmt->fetch();
             
-            if($nameSide !== false) {
-                header("Location: ../provider/site.php?error=username&firstname=" );
-                exit();
-                $error = true;
+            if($nameSite !== false) {
+              $errt .= 'Standortname <b>'.$_POST['nameSite'].'</b> ist schon vergeben';
             }
             else
             {
@@ -95,10 +86,15 @@ session_start();
                   $stmt -> execute(array('address' => $_POST['address'], 'email' => $_POST['email'],'phone' => $_POST['phone']));
                   $result = $stmt -> fetch();
                     $insertsite = $dbo -> prepare ("INSERT INTO site (name, spaces, iban, delivery, correspondence, user_idUser) VALUES (:name, :spaces, :iban, :delivery, :correspondence, :user_idUser)");
-                    $res = $insertsite -> execute(array( 'name' => $_POST['nameSide'], 'spaces' => $_POST['spaces'],'iban' => $_POST['iban'], 'delivery' => $result['idAddress'] ,'correspondence' => $result['idAddress'], 'user_idUser' => $idUser));
-                if($res == true)
+                    $res = $insertsite -> execute(array( 'name' => $_POST['nameSite'], 'spaces' => $_POST['spaces'],'iban' => $_POST['iban'], 'delivery' => $result['idAddress'] ,'correspondence' => $result['idAddress'], 'user_idUser' => $idUser));
+                
+                if( $res != true)
                 {
-                  header("Location: ../site/reservations.php");
+                $errt .= 'Fehler beim speichern der Eingaben';
+                }
+                else
+                {
+                  header("Location: /site/reservations.php");
                   exit();
                 }
                   
@@ -112,11 +108,20 @@ session_start();
                   $stmtli -> execute(array('address' => $_POST['liaddress'], 'email' => $_POST['liemail'],'phone' => $_POST['liphone']));
                   $resultli = $stmt -> fetch();
                   $insertSite = $dbo -> prepare ("INSERT INTO site (name, spaces, iban, delivery, correspondence, user_idUser) VALUES (:name, :spaces, :iban, :delivery, :correspondence, :user_idUser)");
-                  $insertSite -> execute(array( 'name' => $_POST['nameSide'],'spaces' => $_POST['spaces'],'iban' => $_POST['iban'], 'delivery' => $resultli['idAddress'] ,'correspondence' => $result['idAddress'], 'user_idUser' => $idUser));
+                  $insertSite -> execute(array( 'name' => $_POST['nameSite'],'spaces' => $_POST['spaces'],'iban' => $_POST['iban'], 'delivery' => $resultli['idAddress'] ,'correspondence' => $result['idAddress'], 'user_idUser' => $idUser));
                   
+                  if( $insertSite != true)
+                  {
+                  $errt .= 'Fehler beim speichern der Eingaben';
+                  }
+                  else
+                  {
+                    header("Location: /site/reservations.php");
+                    exit();
+                  }
                   if($insertSite== true)
                 {
-                  header("Location: ../site/reservations.php");
+                  header("Location: /site/reservations.php");
                   exit();
                 }
               } 
@@ -125,8 +130,9 @@ session_start();
         ?>
 
     
-    <?php        
+    <?php         
         include '../includes/nav.php';
+        include '../includes/errorhandling.php'; //include errormodal
     ?>
 
 <div class="container-fluid">
@@ -137,12 +143,11 @@ session_start();
 
         <h1>Herzlich Wilkommen <span style="color: red;"><i class="fas fa-heart"></i></span></h1>
         <hr class="my-4">
-        <h3>Qualification</h3> 
+        <h3>Standort erstellung</h3> 
         
-        <p>Vielen Dank für Ihre Registrierung auf unserer Plattform. Damit Sie einen Markstand über unsere Webseite betreiben können, müssen Sie ein Qualifikation Verfahren durchlaufen.</p>
-        <p>Mit der eingabe alle Dokumente werden Sie überprüft und danach können Sie einen Termin für die Probemonate reservieren.</p>
-        <p>Wenn die zwei Monate Probemonat fertig sind und alle Qualifikationen abgeschlossen sind, können Sie entweder einen stand für 12 Monate oder 3 mal einen Stand für 6 Monate reservieren.</p>
-        <p>Nach dem Sie sich kostenpfichtig registriert haben und Ihre Adresse und den Marktstand angegeben haben, erhalten sie von uns einen Brief in den nächsten Tagen.</p>
+        <p>Vielen Dank für Ihre Registrierung auf unserer Plattform. Hier können Sie Ihren Standort erfassen und zur verfügung stellen.</p>
+        
+        
 
         
 
@@ -167,7 +172,7 @@ session_start();
                               echo('<tbody>');
                                 echo('<tr>');
                                   echo('<td>Marktstandort</td>');
-                                  echo('<td><input class="form-control" type="text" name="nameSide" id="nameSide" maxlength="45" required="required"/></td>');
+                                  echo('<td><input class="form-control" type="text" name="nameSite" id="nameSite" maxlength="45" required="required"/></td>');
                                 echo('</tr>');
                                 echo('<tr>');
                                   echo('<td>Verfügbare Plätze am Standort</td>');

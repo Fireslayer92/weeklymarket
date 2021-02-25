@@ -27,6 +27,7 @@ session_start();
 <body>
 
 <?php
+      $errt = "";
         if (isset($_SESSION['idUser']))
         {
             $firstlogin = $dbo->prepare("SELECT count(user_idUser) as count FROM boothprovider WHERE user_idUser like :idUser");
