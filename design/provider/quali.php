@@ -37,24 +37,12 @@ session_start();
           }
         }
       </script>
-      <script>
-      $(document).ready(function () {
-        $('.checkbox input').change(function () {
-            if ($(this).is(':checked')) {
-                $('.req span.cf-required').remove();
-                $('.req input').removeClass('required').removeAttr('required');
-            } else {
-                $('.req label').append('<span class="cf-required">*</span>');
-                $('.req input').attr('required', 'True');
-            }
-          })
-        });
-    </script>
 </head>
 <body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
 
     <?php
+      $errt = "";
         if(isset($_SESSION['id']))
         {
           if ( 'new' != $_SESSION['privilege'] ) {
@@ -63,19 +51,19 @@ session_start();
           }
     
         }
+        
         ?>
         <?php
           if (isset($_POST['import']) && isset($_SERVER['REQUEST_URI']))
           {
             $idUser=$_SESSION['idUser'];
-            $sidestmt = $dbo->prepare("SELECT name FROM boothprovider WHERE name = :name");
+            $sidestmt = $dbo->prepare("SELECT * FROM boothprovider WHERE name = :name");
             $sidestmt -> execute(array('name' => $_POST['nameSide']));
             $nameSide = $sidestmt->fetch();
             
             if($nameSide !== false) {
-                header("Location: ../provider/quali.php?error=username&firstname=" .$lastname. "&username".$username);
-                exit();
-                $error = true;
+                $errt .= 'Der angegebene Standname '.$_POST['nameSide'].' ist schon vergeben.';
+                
             }
             else
             {
@@ -83,6 +71,12 @@ session_start();
               $insert = $dbo -> prepare ("INSERT INTO address (address, plz, city, email, phone) VALUES (:address, :plz, :city, :email, :phone)");
               $insert -> execute(array( 'address' => $_POST['address'], 'plz' => $_POST['plz'], 'city' =>  $_POST['city'], 'email' => $_POST['email'], 'phone' => $_POST['phone']));
               
+              if( $insert != true)
+              {
+              $errt .= 'Fehler beim speichern der Eingaben';
+              }
+                  
+
               if (empty($_POST['rg']))
               {
                 //insert address
@@ -98,11 +92,15 @@ session_start();
                     $insertUser = $dbo -> prepare ("INSERT INTO boothprovider (name, status, qcheck, correspondence, billing, user_idUser) VALUES (:name,'trial', '0', :correspondence, :billing, :user_idUser)");
                     $insertUser -> execute(array( 'name' => $_POST['nameSide'], 'correspondence' => $result['idAddress'],'billing' => $result['idAddress'] , 'user_idUser' => $idUser));
 
-                if($insertUser== true)
-                {
-                  header("Location: ../provider/reservation_provider.php?");
-                  exit();
-                }
+                    if( $insertUser != true)
+                    {
+                    $errt .= 'Fehler beim speichern der Eingaben';
+                    }
+                    else
+                    {
+                      header("Location: ../provider/reservation_provider.php");
+                      exit();
+                    }
                   
               }
               else
@@ -116,8 +114,16 @@ session_start();
                   $insertUser = $dbo -> prepare ("INSERT INTO boothprovider (name, status, qcheck, correspondence, billing, user_idUser) VALUES (:name,'trial', '0', :correspondence, :billing, :user_idUser)");
                   $insertUser -> execute(array( 'name' => $_POST['nameSide'], 'correspondence' => $result['idAddress'],'billing' => $resultrg['idAddress'] , 'user_idUser' => $idUser));
                   
-                  header("Location: ../provider/reservation_provider.php?2");
-                  exit();
+                  if( $insertUser != true)
+                    {
+                    $errt .= 'Fehler beim speichern der Eingaben';
+                    }
+                    else
+                    {
+                      header("Location: ../provider/reservation_provider.php");
+                      exit();
+                    }
+                 
               } 
             }
          }
@@ -126,6 +132,7 @@ session_start();
     
     <?php        
         include '../includes/nav.php';
+        include '../includes/errorhandling.php'; //include errormodal
     ?>
 
 <div class="container-fluid">
@@ -159,7 +166,7 @@ session_start();
                             echo('<div class="modal-content">');
                             echo('<div class="modal-header">');
                             echo('<h2 class="modal-title" id="staticBackdropLabel">Marktstand registrieren</h2>');
-                            echo('<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>');
+                            echo('<button type="button" class="btn-close"  data-dismiss="modal" aria-label="Close"></button>');
                             echo('</div>');
                             echo('<div class="modal-body">');
                             echo('<table class="table">');
