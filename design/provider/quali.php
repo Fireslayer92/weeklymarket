@@ -162,8 +162,8 @@ session_start();
                         <?php
                             
                             echo('<form method="POST" action="./quali.php">');
-                            echo('<div class="modal fade " id="adress_boothprovider" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">');
-                            echo('<div class="modal-dialog modal-notify modal-lg modal-success modal-fluid" role="document" data-bs-backdrop="static">');
+                            echo('<div class="modal fade " id="adress_boothprovider" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">');
+                            echo('<div class="modal-dialog modal-notify modal-lg modal-success modal-fluid" role="document" data-backdrop="static">');
                             echo('<div class="modal-content">');
                             echo('<div class="modal-header">');
                             echo('<h2 class="modal-title" id="staticBackdropLabel">Marktstand registrieren</h2>');
@@ -193,7 +193,7 @@ session_start();
                                   echo('</tr>');
                                   echo('<tr>');
                                     echo('<td>Plz</td>');
-                                    echo('<td><input class="form-control" type="text"  name="plz" id="plz" required="required"/></td>');
+                                    echo('<td><input class="form-control" type="number"  name="plz" id="plz" required="required"/></td>');
                                   echo('</tr>');
                                   echo('<tr>');
                                     echo('<td><label>Stadt</label></td>');

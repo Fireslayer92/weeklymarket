@@ -56,6 +56,7 @@
 				</div> <!-- <div class="col m-1"> -->
 				<div class="col-10 m-1"> <!-- main body for website -->
 					<h2>billing</h2>
+					<input id=filterInput type="text" placeholder="Suchen..">
 					<table class="table table-hover table-striped text-center"> <!-- billingtable -->
 						<thead>
 							<tr>

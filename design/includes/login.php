@@ -12,7 +12,7 @@ if (isset($_POST['login-submit']))
         echo ('<div class="toast-body">');
         echo ('Hello, world! This is a toast message.');
         echo ('</div>');
-        echo ('<button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>');
+        echo ('<button type="button" class="btn-close me-2 m-auto" data-dismiss="toast" aria-label="Close"></button>');
         echo ('</div>');
         echo ('</div>)');
         echo ('header("Location: ../index.php?error=emptyfields");');

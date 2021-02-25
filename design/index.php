@@ -3,17 +3,23 @@ session_start();
 ?>
 <!DOCTYPE html>
 <html lang="de">
-  <head>
+<head>
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+        <link href="/includes/stylesheet.css" rel="stylesheet">
+        <script
+			src="https://code.jquery.com/jquery-3.5.1.min.js"
+			integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+			crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+		<script src="/includes/jquery.tablesort.min.js"></script>
+        <script src="/includes/script.js"></script>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- fontawesome icons -->
     <script src="https://kit.fontawesome.com/55e45674b5.js" crossorigin="anonymous"></script>
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
       <?php
-            include 'includes/db.php';
+            include './includes/db.php';
             $dbo = createDbConnection();
       ?>
     <title>Wochenmarkt</title>
@@ -30,17 +36,17 @@ session_start();
             {
               if ( 'provider' == $_SESSION['privilege'] )
               {
-                header('Location: provider/quali.php');
+                header('Location: /provider/quali.php');
               }
             }
-            $firstloginsite = $dbo->prepare("SELECT count(user_idUser) FROM site WHERE user_idUser like :idUser");
+            $firstloginsite = $dbo->prepare("SELECT count(user_idUser) as count FROM site WHERE user_idUser like :idUser");
             $firstloginsite -> execute(array('idUser' => $_SESSION['idUser']));
             $resultsite = $firstloginsite->fetch();
-            if($resultsite == 0)
+            if($resultsite['count'] == 0)
             {
               if ( 'site' == $_SESSION['privilege'] )
               {
-                header('Location: site/site.php');
+                header('Location: /site/site.php');
               }
             }
         
@@ -50,117 +56,25 @@ session_start();
     { 
       
       
-     echo $_SESSION['message'];
+     $errt = $_SESSION['message'];
       unset($_SESSION['message']);
     }
       
 ?>
-  <!--Navigation-->
-<nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
-  <div class="container-fluid">
-    <h3 class="navbar-brand">Wochenmarkt</h3>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenue" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navMenue">
-        <ul class="navbar-nav ml-auto justify-content-end">
-          <li class="nav-item active">
-            <a class="nav-link" href="index.html">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Über uns</a>
-          </li>
-          <li class="nav-item">
-            <?php
-                if (isset($_SESSION['username'])) {
-                  echo '<a href="includes/logout.php" class="nav-link">Log out</a>';
-                }
-                else {
-                  echo '<a href="#login" class="nav-link" data-bs-toggle="modal" data-bs-target="#myLogin">Login</a>';
-                }
-              ?>
-          </li>
-        </ul> 
-      </div>
-  </div>
-</nav>
-
-<!-- Modal login -->
-
-<div class="modal fade" id="myLogin" tabindex="-1" aria-labelledby="myLoginLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="myLoginLabel">Login</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <form action="includes/login.php" method="post">
-      <div class="modal-body">
-          <div class="mb-3">
-            <label for="username" class="col-form-label">Username/E-Mail:</label>
-            <input type="email" class="form-control" id="username" name="username" required="required">
-          </div>
-          <div class="mb-3">
-            <label for="passwort" class="col-form-label">Passwort:</label>
-            <input type="password" class="form-control" id="password" name="password">
-          </div>
-      </div>
-      <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" id="userRegistration" data-bs-toggle="modal" data-bs-target="#myRegistration" data-bs-dismiss="modal">Registrieren</button>
-        <button class="btn btn-primary" id="login-submit" type="submit" name="login-submit">Login</button>
-      </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<!-- Modal registration -->
-
-<div class="modal fade" id="myRegistration" tabindex="-1" aria-labelledby="myRegistrationLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="myRegistrationLabel">Registrieren</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <form action="includes/signup.php" method="post">
-      <div class="modal-body">
-          <div class="mb-3">
-            <label for="username" class="col-form-label">Username/E-Mail:</label>
-            <input type="email" class="form-control" id="username" name="username" required="required">
-          </div>
-          <div class="mb-3">
-            <label for="passwort" class="col-form-label">Passwort:</label>
-            <input type="password" class="form-control" id="password" name="password" required="required">
-          </div>
-          <div class="mb-3">
-            <label for="password-repeat" class="col-form-label">Passwort wiederholen:</label>
-            <input type="password" class="form-control" id="password-repeat" name="password-repeat" required="required">
-          </div>
-          <div class="mb-3">
-            <label for="type" class="col-form-label">Profil Typ:</label>
-            <select class="form-select" id="profile_typ" name="profile_typ" aria-label="Default select example" required="required">
-              <option value="provider">Markstand Betreiber</option>
-              <option value="side">Standort</option>
-            </select>
-          </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" id="userRegistration" type="submit" name="singup">Registrieren</button>
-      </div>
-      </form>
-    </div>
-  </div>
-</div>
+  <?php
+      include './includes/errorhandling.php'; //include errorhandling
+      include './includes/nav.php'; //include nav bar
+      
+			?>
 
 
 
 <!--Image Slider -->
-<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
   <ol class="carousel-indicators">
-    <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></li>
-    <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></li>
-    <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></li>
+    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
   </ol>
   <div class="carousel-inner">
     <div class="carousel-item active">
@@ -178,11 +92,11 @@ session_start();
       </div>
     </div>
   </div>
-  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
+  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Previous</span>
   </a>
-  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Next</span> 
   </a>
@@ -265,11 +179,6 @@ session_start();
   </div>
 </footer> -->
 
-
-
-
-
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
  
 </body>
 </html>

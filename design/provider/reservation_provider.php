@@ -37,7 +37,8 @@
               //SESSION to variabl
               $idUser = $_SESSION['idUser'];
               //reservation
-              if (isset($_POST['reservation']) && isset($_SERVER['REQUEST_URI'])){
+              if (isset($_POST['reservation']) && isset($_SERVER['REQUEST_URI']))
+                {
                      
                     //new date
                     $query_date = $_POST['Datefrom'];
@@ -93,7 +94,11 @@
                         $provresult = $provstmt -> fetchAll();
                         foreach ($provresult as $row3)
                         {
-                            
+                            if ($row3['qCheck'] == 1){
+                                $qCheck = 1;
+                            } else {
+                                $qCheck = 0;
+                            }
                             //QualitiCkeck User
                             if($row3['status']=='trial')
                             {
@@ -105,6 +110,7 @@
                                 $lastday= $date2->format('Y-m-d');
                                                 
                             }
+                        
                             else
                             {
                                 $trail=0;
@@ -127,30 +133,34 @@
                             $resresult = $resstmt -> fetch();
                             $freeSpaces1 = $resultspaces['spaces'] - $resresult['count'];
                             
-                            //site spaces free
-                            if($freeSpaces1 > 0)
-                            { 
-                                //SQL INSERT reservation
-                                $insert = $dbo -> prepare ("INSERT INTO reservation (boothProvider_idProvider, site_idSite, fromDate, toDate, trail, paid) VALUES (:boothProvider_idProvider, :site_idSite, :fromDate, :toDate, :trail,'0')");
-                                $insert -> execute(array( 'boothProvider_idProvider' => $idprov, 'site_idSite' => $_POST['idSite'], 'fromDate' =>   $firstday, 'toDate' => $lastday, 'trail' => $trail));
-                                //insert successful
-                                if($insert== true) {
-                                    //back to provider_reservation
-                                    header("Location: ../provider/reservation_provider.php?");
-                                    exit();
+                            if($qCheck == 1){
+                                //site spaces free
+                                if($freeSpaces1 > 0)
+                                { 
+                                    //SQL INSERT reservation
+                                    $insert = $dbo -> prepare ("INSERT INTO reservation (boothProvider_idProvider, site_idSite, fromDate, toDate, trail, paid) VALUES (:boothProvider_idProvider, :site_idSite, :fromDate, :toDate, :trail,'0')");
+                                    $insert -> execute(array( 'boothProvider_idProvider' => $idprov, 'site_idSite' => $_POST['idSite'], 'fromDate' =>   $firstday, 'toDate' => $lastday, 'trail' => $trail));
+                                    //insert successful
+                                    if($insert== true) {
+                                        //back to provider_reservation
+                                        header("Location: ../provider/reservation_provider.php?");
+                                        exit();
+                                    }
+                                    else
+                                    {
+                                        //back to provider_reservation
+                                        header("Location: ../provider/reservation_provider.php?reservation=false");
+                                        exit();
+                                    }
                                 }
                                 else
                                 {
-                                    //back to provider_reservation
-                                    header("Location: ../provider/reservation_provider.php?reservation=false");
-                                    exit();
+                                        //back to provider_reservation
+                                        header("Location: ../provider/reservation_provider.php?reservation=keine_freien_pleatze4");
+                                        exit();
                                 }
-                            }
-                            else
-                            {
-                                    //back to provider_reservation
-                                    header("Location: ../provider/reservation_provider.php?reservation=keine_freien_pleatze4");
-                                    exit();
+                            } else{
+                                $errt .= "qCheck nicht durchgef&uuml;hrt";
                             }             
                     }
                    //loop for max reservations
@@ -387,8 +397,6 @@
                             <th>von</th>
                             <th>bis</th>
                             <th>Probe</th>
-                            <th>Rechnung gestellt</th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody id='filterTable'>
@@ -422,99 +430,13 @@
                                     echo('nein');
                                 }
                                 echo('</td>');
-                                echo('<td>');
-                                if ($row['paid'] == 1){
-                                    echo('ja');
-                                } else {
-                                    echo('nein');
-                                }
-                                echo('</td>');
-                                echo('<td>');
-                                if ($row['paid'] == 0){
-                                    //button bill
-                                    echo('<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#billTo'.$row['idReservation'].'">Rechnung stellen</button>');
-                                }
-                                echo('</td>');
                                 echo('</tr>');
                             }
                             
                             echo('</tbody>');
                             echo('</table>');
 
-                            //Modal bill
-                            //SQL SELECT reservation
-                            $stmt = $dbo -> prepare("SELECT idReservation from reservation");
-                            $stmt -> execute();
-                            $result = $stmt -> fetchAll();
-                            foreach ($result as $row){
-
-                            //SQL SELECT reservation join boothProvider and site
-                            $billStmt = $dbo -> prepare ("SELECT r.idReservation as 'idReservation', r.fromDate as 'fromDate', r.toDate as 'toDate', s.name as 'site', bp.name as 'name', a.address as 'address', a.plz as 'plz', a.city as 'city', a.email as 'email' from reservation r join boothProvider bp on bp.idProvider = r.boothProvider_idProvider join address a on a.idAddress = bp.billing join site s on s.idSite = r.site_idSite where idReservation = :idReservation");
-                            $billStmt -> execute(array('idReservation' => $row['idReservation']));
-                            $billRow = $billStmt -> fetch();
-                            //date_diff for billing date
-                            $fromDate=date_create($billRow['fromDate']);
-                            $toDate=date_create($billRow['toDate']);
-                            $diff=date_diff($fromDate,$toDate);
-                            $billingperiod = $diff->format("%m")+1;
-                            echo('<form method="POST" action="./billing.php">');
-                            echo('<div class="modal fade" id="billTo'.$row['idReservation'].'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">');
-                            echo('<div class="modal-dialog modal-notify modal-success modal-fluid modal-dialog-centered" role="document">');
-                               echo('<div class="modal-content">');
-                                  echo('<div class="modal-header">');
-                                  echo('<b>Rechnung an '.$billRow['name'].' stellen</b>');
-                                  echo('</div>');
-                                  echo('<div class="modal-body">');
-                                        echo('<table class="table">');
-                                           echo('<tbody>');
-                                              echo('<tr>');
-                                                 echo('<td>Reservationsnummer</td>');
-                                                 echo('<td>'.$billRow['idReservation'].'</td>');
-                                              echo('</tr>');
-                                              echo('<tr>');
-                                                 echo('<td>Standort</td>');
-                                                 echo('<td>'.$billRow['site'].'</td>');
-                                              echo('</tr>');
-                                              echo('<tr>');
-                                                  echo('<td>Dauer in Monaten</td>');
-                                                  echo('<td>'.$billingperiod.'</td>');
-                                              echo('</tr>');
-                                              echo('<tr>');
-                                                  echo('<td>Name</td>');
-                                                  echo('<td>'.$billRow['name'].'</td>');
-                                              echo('</tr>');
-                                              echo('<tr>');
-                                                  echo('<td>Adresse</td>');
-                                                  echo('<td>'.$billRow['address'].'<br/'.$billRow['plz'].'&nbsp;'.$billRow['city'].'</td>');
-                                              echo('</tr>');
-                                              echo('<tr>');
-                                                  echo('<td>E-Mail</td>');
-                                                  echo('<td>'.$billRow['email'].'</td>');
-                                              echo('</tr>');
-                                              echo('<tr>');
-                                                  echo('<td>Zahlungskonditionen in Tagen</td>');
-                                                  echo('<td><input type="text" name="billingCondition" id="billingCondition" value="30"/></td>');
-                                              echo('</tr>');
-                                              echo('<tr>');
-                                                  echo('<td>Rechnungsdatum</td>');
-                                                  echo('<td><input type="date" name="reservationDate" id="reservationDate" value="'.date("Y-m-d").'"/></td>');
-                                              echo('</tr>');
-                                           echo('</tbody>');
-                                        echo('</table>');
                             
-                                  echo('</div>');
-                                  //button exit and bill
-                                  echo('<div class="modal-footer justify-content-center">');
-                                  echo('<input type hidden name="billingChange" id="billingChange" value="new"/>');
-                                  echo('<input type hidden name="idReservation" id="idReservation" value="'.$billRow['idReservation'].'"/>');
-                                  echo('<button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>&nbsp;');
-                                  echo('<button type="submit" class="btn btn-primary">Rechnung stellen</button>');
-                                  echo('</div>');
-                               echo('</div>');
-                            echo('</div>');
-                            echo('</div>');
-                            echo('</form>');
-                            }
                             ?>
                 </div>
                 <!--last row-->

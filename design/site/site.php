@@ -91,16 +91,14 @@ session_start();
               } 
               if(isset($_POST['li'])) 
               {
-                  $stmt = $dbo -> prepare("SELECT idAddress FROM address where address = :address  and email = :email and phone = :phone");
+                  $stmt = $dbo -> prepare("SELECT idAddress FROM address where address like :address and email like :email and phone like :phone");
                   $stmt -> execute(array('address' => $_POST['address'], 'email' => $_POST['email'],'phone' => $_POST['phone']));
                   $result = $stmt -> fetch();
-
                     $insertsite = $dbo -> prepare ("INSERT INTO site (name, spaces, iban, delivery, correspondence, user_idUser) VALUES (:name, :spaces, :iban, :delivery, :correspondence, :user_idUser)");
-                    $insertsite -> execute(array( 'name' => $_POST['nameSide'], 'spaces' => $_POST['spaces'],'iban' => $_POST['iban'], 'delivery' => $result['idAddress'] ,'correspondence' => $result['idAddress'], 'user_idUser' => $idUser));
-
-                if($insertsite== true)
+                    $res = $insertsite -> execute(array( 'name' => $_POST['nameSide'], 'spaces' => $_POST['spaces'],'iban' => $_POST['iban'], 'delivery' => $result['idAddress'] ,'correspondence' => $result['idAddress'], 'user_idUser' => $idUser));
+                if($res == true)
                 {
-                  header("Location: ../site/reservations.php?");
+                  header("Location: ../site/reservations.php");
                   exit();
                 }
                   
@@ -116,8 +114,11 @@ session_start();
                   $insertSite = $dbo -> prepare ("INSERT INTO site (name, spaces, iban, delivery, correspondence, user_idUser) VALUES (:name, :spaces, :iban, :delivery, :correspondence, :user_idUser)");
                   $insertSite -> execute(array( 'name' => $_POST['nameSide'],'spaces' => $_POST['spaces'],'iban' => $_POST['iban'], 'delivery' => $resultli['idAddress'] ,'correspondence' => $result['idAddress'], 'user_idUser' => $idUser));
                   
-                  header("Location: ../site/reservations.php?2");
+                  if($insertSite== true)
+                {
+                  header("Location: ../site/reservations.php");
                   exit();
+                }
               } 
             }
          }
@@ -154,12 +155,12 @@ session_start();
                         <?php
                             
                             echo('<form method="POST" action="./site.php">');
-                            echo('<div class="modal fade " id="adress_boothprovider" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">');
-                            echo('<div class="modal-dialog modal-notify modal-lg modal-success modal-fluid" role="document" data-bs-backdrop="static">');
+                            echo('<div class="modal fade " id="adress_boothprovider" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">');
+                            echo('<div class="modal-dialog modal-notify modal-lg modal-success modal-fluid" role="document" data-backdrop="static">');
                             echo('<div class="modal-content">');
                             echo('<div class="modal-header">');
                             echo('<h2 class="modal-title" id="staticBackdropLabel">Marktstand registrieren</h2>');
-                            echo('<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>');
+                            echo('<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>');
                             echo('</div>');
                             echo('<div class="modal-body">');
                             echo('<table class="table">');
@@ -193,7 +194,7 @@ session_start();
                                   echo('</tr>');
                                   echo('<tr>');
                                     echo('<td>Plz</td>');
-                                    echo('<td><input class="form-control" type="text"  name="plz" id="plz" required="required"/></td>');
+                                    echo('<td><input class="form-control" type="number"  name="plz" id="plz" required="required"/></td>');
                                   echo('</tr>');
                                   echo('<tr>');
                                     echo('<td><label>Stadt</label></td>');
@@ -213,7 +214,7 @@ session_start();
                                 echo('<table class="table">');
                                   echo('<tbody>');
                                     echo('<tr>');
-                                      echo('<td>Rechnungsadresse</td>');
+                                      echo('<td>Lieferadresse</td>');
                                       echo('<td><input class="form-control" type="address" name="liaddress" id="liadress" maxlength="200"  /></td>');
                                     echo('</tr>');
                                     echo('<tr>');

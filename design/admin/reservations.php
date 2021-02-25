@@ -1,5 +1,3 @@
-
-
 <?php
 	session_start();
 	?>
@@ -232,8 +230,10 @@
 							foreach ($siteresult as $row){ //add extendable card for each site
 							    echo('<div class="card">');
                                     echo('<div class="card-header" id="heading'.$row['idSite'].'">');
-                                        echo('<button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#overview'.$row['idSite'].'" aria-expanded="true" aria-controls="overview'.$row['idSite'].'">'.$row['name'].'</button>');
-                                        echo('<button class="btn btn-primary" type="submit" data-toggle="modal" data-target="#reservation_prov'.$row['idSite'].'">Standplatz Reservieren</button>');
+                                        echo('<div class="d-flex justify-content-between">'); //distribute buttons on page
+                                            echo('<button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#overview'.$row['idSite'].'" aria-expanded="true" aria-controls="overview'.$row['idSite'].'">'.$row['name'].'</button>');
+                                            echo('<button class="btn btn-primary" type="submit" data-toggle="modal" data-target="#reservation_prov'.$row['idSite'].'">Standplatz Reservieren</button>');
+                                        echo('</div>');
                                     echo('</div>'); //<div class="card-header" id="heading'.$row['idSite'].'">'
                                     echo('<div id="overview'.$row['idSite'].'" class="collapse" aria-labelledby="heading'.$row['idSite'].'" data-parent="#overview">');
                                         echo('<div class="card-body">');
