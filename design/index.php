@@ -12,37 +12,40 @@ session_start();
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-
+      <?php
+            include 'includes/db.php';
+            $dbo = createDbConnection();
+      ?>
     <title>Wochenmarkt</title>
   </head>
 <body>
+
 <?php
         if (isset($_SESSION['idUser']))
         {
-
+            $firstlogin = $dbo->prepare("SELECT count(user_idUser) FROM boothprovider WHERE user_idUser = :idUser");
+            $firstlogin -> execute(array('idUser' => $_SESSION['idUser']));
+            $result = $firstlogin->fetch();
+            if($result == 0)
+            {
+              if ( 'provider' == $_SESSION['privilege'] )
+              {
+                header('Location: provider/quali.php');
+              }
+            }
+            $firstloginsite = $dbo->prepare("SELECT count(user_idUser) FROM site WHERE user_idUser = :idUser");
+            $firstloginsite -> execute(array('idUser' => $_SESSION['idUser']));
+            $resultsite = $firstloginsite->fetch();
+            if($resultsite == 0)
+            {
+              if ( 'site' == $_SESSION['privilege'] )
+              {
+                header('Location: site/site.php');
+              }
+            }
         
-          if ( 'admin' == $_SESSION['privilege'] )
-          {
-            header('Location: admin/reservations.php');
-          }
+        }
 
-          elseif ( 'side' == $_SESSION['privilege'] )
-          {
-            header('Location: provider/quali.php');
-          }
-          elseif ( 'qualified' == $_SESSION['privilege'])
-          {
-            header('Location: ../abo.php');
-          }
-          elseif ( 'provider' == $_SESSION['privilege'] )
-          {
-            header('Location: ../reservation_provider.php');
-          }
-          else
-          {
-            header('Location: /index.php');
-          }
-      }
     if (isset($_SESSION['message']))
     { 
       
@@ -94,7 +97,7 @@ session_start();
       <form action="includes/login.php" method="post">
       <div class="modal-body">
           <div class="mb-3">
-            <label for="username" class="col-form-label">Username:</label>
+            <label for="username" class="col-form-label">Username/E-Mail:</label>
             <input type="email" class="form-control" id="username" name="username" required="required">
           </div>
           <div class="mb-3">
@@ -123,7 +126,7 @@ session_start();
       <form action="includes/signup.php" method="post">
       <div class="modal-body">
           <div class="mb-3">
-            <label for="username" class="col-form-label">Username:</label>
+            <label for="username" class="col-form-label">Username/E-Mail:</label>
             <input type="email" class="form-control" id="username" name="username" required="required">
           </div>
           <div class="mb-3">
