@@ -176,7 +176,7 @@ session_start();
                                 echo('</tr>');
                                 echo('<tr>');
                                   echo('<td>Verfügbare Plätze am Standort</td>');
-                                  echo('<td><input class="form-control" type="text" name="spaces" id="spaces" maxlength="11" required="required"/></td>');
+                                  echo('<td><input class="form-control" type="number" name="spaces" id="spaces" maxlength="11" required="required"/></td>');
                                 echo('</tr>');
                                 echo('<tr>');
                                   echo('<td>IBAN Nummer</td>');
