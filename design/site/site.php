@@ -25,16 +25,16 @@ session_start();
           // Get the checkbox
           var checkBox = document.getElementById("myCheck");
           // Get the output text
-          var text = document.getElementById("rgadress");
+          var text = document.getElementById("liaddress");
 
           // If the checkbox is checked, display the output text
           if (checkBox.checked == false){
             text.style.display = "block";
-            $('.reg_input').prop('required',true);
+            $('.li_input').prop('required',true);
             
           } else {
             text.style.display = "none";
-            $('.reg_input').prop('required',false);
+            $('.li_input').prop('required',false);
           }
         }
       </script>
@@ -220,23 +220,23 @@ session_start();
                                   echo('<tbody>');
                                     echo('<tr>');
                                       echo('<td>Lieferadresse</td>');
-                                      echo('<td><input class="form-control" type="address" name="liaddress" id="liadress" maxlength="200"  /></td>');
+                                      echo('<td><input class="form-control li_input" type="address" name="liaddress" id="liadress" maxlength="200"  /></td>');
                                     echo('</tr>');
                                     echo('<tr>');
                                       echo('<td>Plz</td>');
-                                      echo('<td><input class="form-control" type="number"  name="liplz" id="liplz"  style="hidden"/></td>');
+                                      echo('<td><input class="form-control li_input" type="number"  name="liplz" id="liplz"  style="hidden"/></td>');
                                     echo('</tr>');
                                     echo('<tr>');
                                       echo('<td><label>Stadt</label></td>');
-                                      echo('<td><input class="form-control" type="text" name="licity" id="licity" maxlength="45"  style="hidden"/></td>');                                                                           
+                                      echo('<td><input class="form-control li_input" type="text" name="licity" id="licity" maxlength="45"  style="hidden"/></td>');                                                                           
                                     echo('</tr>');
                                     echo('<tr>');
                                       echo('<td><label>E-Mail</label></td>');
-                                      echo('<td><input class="form-control" type="email" name="liemail" id="liemail" maxlength="200"  style="hidden"/></td>');                                                                           
+                                      echo('<td><input class="form-control li_input" type="email" name="liemail" id="liemail" maxlength="200"  style="hidden"/></td>');                                                                           
                                     echo('</tr>');
                                     echo('<tr>');
                                       echo('<td><label>Handy</label></td>');
-                                      echo('<td><input class="form-control" type="phone" name="liphone" id="liphone" maxlength="20"  style="hidden"/></td>');                                                                           
+                                      echo('<td><input class="form-control li_input" type="phone" name="liphone" id="liphone" maxlength="20"  style="hidden"/></td>');                                                                           
                                     echo('</tr>');
                                   echo('</tbody>');
                                 echo('</table>');
