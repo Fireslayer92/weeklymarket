@@ -1,8 +1,8 @@
 <?php
 function createDbConnection(){
-    $user = 'weeklyma_marktstand';
-    $pass = '!asRijEYZsQGkruEJA61';
-    $db = 'weeklyma_marktstand';
+    $user = $_ENV['dbuser'];
+    $pass = $_ENV['dbpassword'];
+    $db = $_ENV['db'];
         try {
             $dsn = "mysql:host=localhost;dbname=$db";
             $dbconnection = new PDO($dsn, $user, $pass);
