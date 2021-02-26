@@ -71,7 +71,9 @@
 			            if ($result['userCount'] > 1){ //Control if there is still an admin-account available
                             if ($_POST['idUser'] != $_SESSION['idUser']){ //Control if user to delete is currently logged in
                                 $stmt = $dbo->prepare("Delete from user where idUser = :idUser"); //Delete User
-                                $stmt->execute(array('idUser' => $_POST['idUser']));
+								$stmt->execute(array('idUser' => $_POST['idUser']));
+								echo('<script>window.location = window.location.href;</script>');
+			                    exit();
                             }
                             else{
                                 $errt .= 'Sie k&ouml;nnen sich nicht selbst l&ouml;schen';
