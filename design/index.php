@@ -95,20 +95,19 @@ session_start();
   <ol class="carousel-indicators">
     <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
     <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
   </ol>
   <div class="carousel-inner">
     <div class="carousel-item active">
       <img src="picture/market_2.png" class="d-block w-100" alt="market_1">
       <div class="carousel-caption" style="top: 10%; ">
-        <h1 style="font-size: 700%">Wilkommen</h1>
+        <h1 style="font-size: 700%">Willkommen</h1>
         <h3 style="font-size: 300%">Auf dem Wochenmarkt</h3>
       </div>
     </div>
     <div class="carousel-item">
       <img src="picture/market_3.png" class="d-block w-100" alt="market_3">
       <div class="carousel-caption" style="top: 10%; ">
-        <h1 style="font-size: 700%">Wilkommen</h1>
+        <h1 style="font-size: 700%">Willkommen</h1>
         <h3 style="font-size: 300%">Auf dem Wochenmarkt</h3>
       </div>
     </div>
