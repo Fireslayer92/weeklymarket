@@ -55,15 +55,15 @@
                 $firstday= $date->format('Y-m-d');
                 
                 //SQL Select reservation
-                $resstmt1 = $dbo -> prepare("SELECT bp.name as 'boothprovider' , bp.qCheck as 'qCheck', s.idSite as 'idSite', r.fromDate as 'fromdate', r.toDate as 'todate', s.spaces as 'spaces', r.boothProvider_idProvider as 'idProvider' FROM reservation r join boothProvider bp on bp.idProvider = r.boothProvider_idProvider join site s on s.idSite = r.site_idSite WHERE bp.idProvider like :idProvider");
+                $resstmt1 = $dbo -> prepare("SELECT bp.name as 'boothprovider' , bp.qCheck as 'qCheck', s.idSite as 'idSite', r.fromDate as 'fromdate', r.toDate as 'todate', s.spaces as 'spaces', r.boothProvider_idProvider as 'idProvider' FROM reservation r join boothprovider bp on bp.idProvider = r.boothProvider_idProvider join site s on s.idSite = r.site_idSite WHERE bp.idProvider like :idProvider");
                 $resstmt1 -> execute(array("idProvider"=>$_POST['idProvider']));
                 $result1 = $resstmt1 -> fetchAll();
                 //SQL Select reservation for user reservations
-                $activerescount = $dbo -> prepare("SELECT count(r.idReservation) as count from reservation r join boothProvider bp on bp.idProvider = r.boothProvider_idProvider where toDate >= date(now()) AND bp.idProvider like :idProvider");
+                $activerescount = $dbo -> prepare("SELECT count(r.idReservation) as count from reservation r join boothprovider bp on bp.idProvider = r.boothProvider_idProvider where toDate >= date(now()) AND bp.idProvider like :idProvider");
                 $activerescount -> execute(array("idProvider"=>$_POST['idProvider']));
                 $resultactivecount = $activerescount -> fetch();
                 //SQL Select reservation for three x 6 month Reservation
-                $activerescount2 = $dbo -> prepare("SELECT * from reservation r join boothProvider bp on bp.idProvider = r.boothProvider_idProvider where toDate >= date(now()) AND bp.idProvider like :idProvider");
+                $activerescount2 = $dbo -> prepare("SELECT * from reservation r join boothprovider bp on bp.idProvider = r.boothProvider_idProvider where toDate >= date(now()) AND bp.idProvider like :idProvider");
                 $activerescount2 -> execute();
                 $resultactivecount1 = $activerescount2 -> fetchAll();
                 //Period between fromDate to toDate
@@ -96,16 +96,32 @@
                     $provresult = $provstmt -> fetchAll();
                     foreach ($provresult as $row3)
                     {
-                        if ($_POST['flexRadioDefault'] == 2){
-                            $trail=1;
-                        } else{
-                            $trail=0;
+                        if ($row3['qCheck'] == 1){
+                            $qCheck = 1;
+                        } else {
+                            $qCheck = 0;
                         }
+                        //QualitiCkeck User
+                        if($row3['status']=='trial')
+                        {
+                            $trail=1;
+                            //Last day of month
+                            $query_date2 = $_POST['Datefrom'];
+                            $date2 = new DateTime($query_date2);
+                            $date2->modify('last day of 1 month');
+                            $lastday= $date2->format('Y-m-d');
+                                            
+                        }
+                    
+                        else
+                        {
+                            $trail=0;
                             //Last day of month
                             $query_date2 = $_POST['Datefrom'];
                             $date2 = new DateTime($query_date2);
                             $date2->modify('last day of '.$_POST['flexRadioDefault'].' month');
                             $lastday= $date2->format('Y-m-d');
+                        }
                         //Variable idProvider
                         $idprov = $row3['idProvider'];
                     }
@@ -377,9 +393,9 @@
                         </thead>
                         <tbody id='filterTable'>
                             <?php
-                            $stmt = $dbo -> prepare("SELECT bp.name as 'boothprovider' , s.name as 'site', r.fromDate as 'fromdate', r.toDate as 'todate', r.trail as 'trail', r.paid as 'paid', r.idReservation as 'idReservation'  FROM reservation r join boothProvider bp on bp.idProvider = r.boothProvider_idProvider join site s on s.idSite = r.site_idSite");
+                            $stmt = $dbo -> prepare("SELECT bp.name as 'boothprovider' , s.name as 'site', r.fromDate as 'fromdate', r.toDate as 'todate', r.trail as 'trail', r.paid as 'paid', r.idReservation as 'idReservation'  FROM reservation r join boothprovider bp on bp.idProvider = r.boothProvider_idProvider join site s on s.idSite = r.site_idSite");
                             $stmt -> execute();
-                            $result = $stmt -> fetchAll(); //SELECT bp.name as 'boothprovider' , s.name as 'site', r.fromDate as 'fromdate', r.toDate as 'todate', r.trail as 'trail', r.paid as 'paid', r.idReservation as 'idReservation'  FROM reservation r join boothProvider bp on bp.idProvider = r.boothProvider_idProvider join site s on s.idSite = r.site_idSite
+                            $result = $stmt -> fetchAll(); //SELECT bp.name as 'boothprovider' , s.name as 'site', r.fromDate as 'fromdate', r.toDate as 'todate', r.trail as 'trail', r.paid as 'paid', r.idReservation as 'idReservation'  FROM reservation r join boothprovider bp on bp.idProvider = r.boothProvider_idProvider join site s on s.idSite = r.site_idSite
                             foreach ($result as $row){
                                 echo('<tr>');
                                 echo('<td>');
@@ -427,9 +443,9 @@
                     $stmt -> execute();
                     $result = $stmt -> fetchAll(); //SELECT idReservation from reservation
                     foreach ($result as $row){ //make modal for each reservation
-                        $billStmt = $dbo -> prepare ("SELECT r.idReservation as 'idReservation', r.fromDate as 'fromDate', r.toDate as 'toDate', s.name as 'site', bp.name as 'name', a.address as 'address', a.plz as 'plz', a.city as 'city', a.email as 'email' from reservation r join boothProvider bp on bp.idProvider = r.boothProvider_idProvider join address a on a.idAddress = bp.billing join site s on s.idSite = r.site_idSite where idReservation = :idReservation");
+                        $billStmt = $dbo -> prepare ("SELECT r.idReservation as 'idReservation', r.fromDate as 'fromDate', r.toDate as 'toDate', s.name as 'site', bp.name as 'name', a.address as 'address', a.plz as 'plz', a.city as 'city', a.email as 'email' from reservation r join boothprovider bp on bp.idProvider = r.boothProvider_idProvider join address a on a.idAddress = bp.billing join site s on s.idSite = r.site_idSite where idReservation = :idReservation");
                         $billStmt -> execute(array('idReservation' => $row['idReservation']));
-                        $billRow = $billStmt -> fetch(); //SELECT r.idReservation as 'idReservation', r.fromDate as 'fromDate', r.toDate as 'toDate', s.name as 'site', bp.name as 'name', a.address as 'address', a.plz as 'plz', a.city as 'city', a.email as 'email' from reservation r join boothProvider bp on bp.idProvider = r.boothProvider_idProvider join address a on a.idAddress = bp.billing join site s on s.idSite = r.site_idSite where idReservation = :idReservation
+                        $billRow = $billStmt -> fetch(); //SELECT r.idReservation as 'idReservation', r.fromDate as 'fromDate', r.toDate as 'toDate', s.name as 'site', bp.name as 'name', a.address as 'address', a.plz as 'plz', a.city as 'city', a.email as 'email' from reservation r join boothprovider bp on bp.idProvider = r.boothProvider_idProvider join address a on a.idAddress = bp.billing join site s on s.idSite = r.site_idSite where idReservation = :idReservation
                         $fromDate=date_create($billRow['fromDate']);
                         $toDate=date_create($billRow['toDate']);
                         $diff=date_diff($fromDate,$toDate);

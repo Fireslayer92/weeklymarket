@@ -97,9 +97,9 @@
                         </thead>
                         <tbody id='filterTable'>
                             <?php
-                            $stmt = $dbo -> prepare("SELECT bp.name as 'boothprovider' , s.name as 'site', r.fromDate as 'fromdate', r.toDate as 'todate', r.trail as 'trail', r.paid as 'paid', r.idReservation as 'idReservation'  FROM reservation r join boothProvider bp on bp.idProvider = r.boothProvider_idProvider join site s on s.idSite = r.site_idSite where s.user_idUser = :idUser");
+                            $stmt = $dbo -> prepare("SELECT bp.name as 'boothprovider' , s.name as 'site', r.fromDate as 'fromdate', r.toDate as 'todate', r.trail as 'trail', r.paid as 'paid', r.idReservation as 'idReservation'  FROM reservation r join boothprovider bp on bp.idProvider = r.boothProvider_idProvider join site s on s.idSite = r.site_idSite where s.user_idUser = :idUser");
                             $stmt -> execute(array('idUser' => $_SESSION['idUser']));
-                            $result = $stmt -> fetchAll(); //SELECT bp.name as 'boothprovider' , s.name as 'site', r.fromDate as 'fromdate', r.toDate as 'todate', r.trail as 'trail', r.paid as 'paid', r.idReservation as 'idReservation'  FROM reservation r join boothProvider bp on bp.idProvider = r.boothProvider_idProvider join site s on s.idSite = r.site_idSite where s.user_idUser = :idUser
+                            $result = $stmt -> fetchAll(); //SELECT bp.name as 'boothprovider' , s.name as 'site', r.fromDate as 'fromdate', r.toDate as 'todate', r.trail as 'trail', r.paid as 'paid', r.idReservation as 'idReservation'  FROM reservation r join boothprovider bp on bp.idProvider = r.boothProvider_idProvider join site s on s.idSite = r.site_idSite where s.user_idUser = :idUser
                             foreach ($result as $row){
                                 echo('<tr>');
                                 echo('<td>');

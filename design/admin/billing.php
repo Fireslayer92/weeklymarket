@@ -69,9 +69,9 @@
 						</thead>
 						<tbody id='filterTable'>
 							<?php
-								$stmt = $dbo -> prepare ("SELECT b.idBilling as 'idBilling', b.billingDate as 'billingDate', b.billingCondition as 'billingCondition', b.billingStatus as 'billingStatus', r.idReservation as 'idReservation', bp.name as 'boothProvider', s.name as 'site' from reservation r join billing b on b.reservation_idReservation = r.idReservation join site s on s.idSite = r.site_idSite join boothProvider bp on bp.idProvider = r.boothProvider_idProvider");
+								$stmt = $dbo -> prepare ("SELECT b.idBilling as 'idBilling', b.billingDate as 'billingDate', b.billingCondition as 'billingCondition', b.billingStatus as 'billingStatus', r.idReservation as 'idReservation', bp.name as 'boothProvider', s.name as 'site' from reservation r join billing b on b.reservation_idReservation = r.idReservation join site s on s.idSite = r.site_idSite join boothprovider bp on bp.idProvider = r.boothProvider_idProvider");
 								$stmt -> execute();
-								$result = $stmt -> fetchAll(); //SELECT b.idBilling as 'idBilling', b.billingDate as 'billingDate', b.billingCondition as 'billingCondition', b.billingStatus as 'billingStatus', r.idReservation as 'idReservation', bp.name as 'boothProvider', s.name as 'site' from reservation r join billing b on b.reservation_idReservation = r.idReservation join site s on s.idSite = r.site_idSite join boothProvider bp on bp.idProvider = r.boothProvider_idProvider
+								$result = $stmt -> fetchAll(); //SELECT b.idBilling as 'idBilling', b.billingDate as 'billingDate', b.billingCondition as 'billingCondition', b.billingStatus as 'billingStatus', r.idReservation as 'idReservation', bp.name as 'boothProvider', s.name as 'site' from reservation r join billing b on b.reservation_idReservation = r.idReservation join site s on s.idSite = r.site_idSite join boothprovider bp on bp.idProvider = r.boothProvider_idProvider
 								foreach($result as $row){
 								    echo('<tr>');
 								    echo('<td>');

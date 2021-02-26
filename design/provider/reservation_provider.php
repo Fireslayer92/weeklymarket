@@ -55,15 +55,15 @@
                     $firstday= $date->format('Y-m-d');
                     
                     //SQL Select reservation
-                    $resstmt1 = $dbo -> prepare("SELECT bp.name as 'boothprovider' , bp.status as 'status', s.idSite as 'idSite', r.fromDate as 'fromdate', r.toDate as 'todate', s.spaces as 'spaces', r.boothProvider_idProvider as 'idProvider' FROM reservation r join boothProvider bp on bp.idProvider = r.boothProvider_idProvider join site s on s.idSite = r.site_idSite WHERE bp.user_idUser like $idUser");
+                    $resstmt1 = $dbo -> prepare("SELECT bp.name as 'boothprovider' , bp.status as 'status', s.idSite as 'idSite', r.fromDate as 'fromdate', r.toDate as 'todate', s.spaces as 'spaces', r.boothProvider_idProvider as 'idProvider' FROM reservation r join boothprovider bp on bp.idProvider = r.boothProvider_idProvider join site s on s.idSite = r.site_idSite WHERE bp.user_idUser like $idUser");
                     $resstmt1 -> execute();
                     $result1 = $resstmt1 -> fetchAll();
                     //SQL Select reservation for user reservations
-                    $activerescount = $dbo -> prepare("SELECT count(r.idReservation) as count from reservation r join boothProvider bp on bp.idProvider = r.boothProvider_idProvider where toDate >= date(now()) AND bp.user_idUser like $idUser");
+                    $activerescount = $dbo -> prepare("SELECT count(r.idReservation) as count from reservation r join boothprovider bp on bp.idProvider = r.boothProvider_idProvider where toDate >= date(now()) AND bp.user_idUser like $idUser");
                     $activerescount -> execute();
                     $resultactivecount = $activerescount -> fetch();
                     //SQL Select reservation for three x 6 month Reservation
-                    $activerescount2 = $dbo -> prepare("SELECT * from reservation r join boothProvider bp on bp.idProvider = r.boothProvider_idProvider where toDate >= date(now()) AND bp.user_idUser like $idUser");
+                    $activerescount2 = $dbo -> prepare("SELECT * from reservation r join boothprovider bp on bp.idProvider = r.boothProvider_idProvider where toDate >= date(now()) AND bp.user_idUser like $idUser");
                     $activerescount2 -> execute();
                     $resultactivecount1 = $activerescount2 -> fetchAll();
                     //Period between fromDate to toDate
@@ -167,7 +167,7 @@
                             }             
                     }
                    //loop for max reservations
-                    elseif ($_POST['flexRadioDefault']==6 && $resultactivecount['count'] < 3 && $threeimport == false|| $_POST['flexRadioDefault']==12 && $resultactivecount['count'] < 1 || $_POST['flexRadioDefault']==2 && $resultactivecount['count'] < 1)
+                    elseif ($_POST['flexRadioDefault']==5 && $resultactivecount['count'] < 3 && $threeimport == false|| $_POST['flexRadioDefault']==12 && $resultactivecount['count'] < 1 || $_POST['flexRadioDefault']==2 && $resultactivecount['count'] < 1)
                     {
                         foreach ($result1 as $row2)
                         {
@@ -402,9 +402,9 @@
                     </thead>
                     <tbody id='filterTable'>
                         <?php
-                            //SQL SELECT reservation join boothProvider and site
+                            //SQL SELECT reservation join boothprovider and site
                             $idUser = $_SESSION['idUser']; 
-                            $stmt = $dbo -> prepare("SELECT bp.name as 'boothprovider' , s.name as 'site', r.fromDate as 'fromdate', r.toDate as 'todate', r.trail as 'trail', r.paid as 'paid', r.idReservation as 'idReservation'  FROM reservation r join boothProvider bp on bp.idProvider = r.boothProvider_idProvider join site s on s.idSite = r.site_idSite WHERE bp.user_idUser like $idUser");
+                            $stmt = $dbo -> prepare("SELECT bp.name as 'boothprovider' , s.name as 'site', r.fromDate as 'fromdate', r.toDate as 'todate', r.trail as 'trail', r.paid as 'paid', r.idReservation as 'idReservation'  FROM reservation r join boothprovider bp on bp.idProvider = r.boothProvider_idProvider join site s on s.idSite = r.site_idSite WHERE bp.user_idUser like $idUser");
                             $stmt -> execute();
                             $result = $stmt -> fetchAll();
                             foreach ($result as $row){
