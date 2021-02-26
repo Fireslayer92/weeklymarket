@@ -29,6 +29,7 @@
 			    switch ($_POST['userChange']) {   
 			
 					case 'new': //Create new admin User
+					    
 			            if(empty($_POST['username']) || empty($_POST['password']) || empty($_POST['passwordRepeat'])){
 			                $errt .= "Nicht alle Felder ausgef&uuml;llt";
 			            }
@@ -47,17 +48,17 @@
 								$errt .= "Benutzer mit dieser E-Mail existiert bereits";
 			                }    
 			                else{
-			                    if(!empty($errt)) {    
-			                        
 			                        $password_hash = password_hash($_POST['password'], PASSWORD_DEFAULT); //Create passwordhash and checking with DB
 			                        
 			                        $stmt = $dbo->prepare("INSERT INTO user (username, password, privilege) VALUES (:username, :password, 'admin')");
 			                        $result = $stmt->execute(array('username' => $_POST['username'], 'password' => $password_hash));
-			                        
+			                        print_r($result);
 			                        if(!$result) {        
 			                            $errt .= "Fehler beim speichern des Benutzers";
+			                        } else {
+			                            echo('<script>window.location = window.location.href;</script>');
+			                            exit();
 			                        }
-			                    }
 			                }
 						}
 			            break; //case new
@@ -131,7 +132,7 @@
                                                 echo('</div>'); //<div class="modal-header">
                                                 echo('<form method="POST">'); //Form for information about user delete
 								                echo('<div class="modal-body">');
-								                    echo('Wollen Sie den Benutzer '.$row['username'].' wirklich l&ouml;schen?<br/><p class="text-danger"><b>Warnung! Dies kann nicht rückgängig gemacht werden!</b></p>');
+								                    echo('Wollen Sie den Benutzer '.$row['username'].' wirklich l&ouml;schen?<br/><p class="text-danger"><b>Warnung! Dies kann nicht r체ckg채ngig gemacht werden!</b></p>');
 								                        echo('<input type hidden name="idUser" id="idUser" value="'.$row['idUser'].'"/><br/>');
 								                        echo('<div class="modal-footer">');
 								                            echo('<button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>&nbsp;');
