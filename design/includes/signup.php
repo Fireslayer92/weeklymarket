@@ -54,7 +54,7 @@ if (isset($_POST['singup'])){
                 
                 if($result) {        
                     
-                    $_SESSION['message'] ='Erfolgreich Registriert.';
+                    $_SESSION['successMessage'] ='Erfolgreich Registriert.';
                     header("Location: ../index.php");
                     exit();
 

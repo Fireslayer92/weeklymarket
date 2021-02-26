@@ -11,6 +11,13 @@ $(document).ready(function(){ //check if document is ready (page is being shown)
   $(document).ready(function(){ //if error show error modal
     $("#error").modal('show');
   });
-  $(document).on('hidden.bs.modal','#error', function () { //on hide of error modal, refresh page to clear error
+  $(document).on('hidden.bs.modal','#error', function () { //on hide of error modal, refresh page to clear message
+    window.location = window.location.href;
+  });
+  
+  $(document).ready(function(){ //if success show success modal
+    $("#success").modal('show');
+  });
+  $(document).on('hidden.bs.modal','#success', function () { //on hide of success modal, refresh page to clear message
     window.location = window.location.href;
   });

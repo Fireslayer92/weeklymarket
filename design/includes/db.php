@@ -1,11 +1,11 @@
 <?php
 function createDbConnection(){
-    $user = 'USER407941_markt';
-    $pass = 'Ibz123405';
-    $db = 'db_407941_3';
+    $user = 'weeklyma_marktstand';
+    $pass = '!asRijEYZsQGkruEJA61';
+    $db = 'weeklyma_marktstand';
         try {
             $dsn = "mysql:host=localhost;dbname=$db";
-            $dbconnection = new PDO($dsn, $user, false);
+            $dbconnection = new PDO($dsn, $user, $pass);
             return $dbconnection;
         } catch (PDOException $e) {
             print "Error!: " . $e->getMessage() . "<br/>";

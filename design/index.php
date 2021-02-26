@@ -55,17 +55,38 @@ session_start();
 
     if (isset($_SESSION['message']))
     { 
-      
-      
      $errt = $_SESSION['message'];
       unset($_SESSION['message']);
+    } elseif (isset($_SESSION['successMessage'])){
+      $succ = $_SESSION['successMessage'];
+      unset($_SESSION['successMessage']);
     }
       
 ?>
   <?php
       include './includes/errorhandling.php'; //include errorhandling
       include './includes/nav.php'; //include nav bar
-      
+      if (!empty($succ)){
+        ?>
+        <div id="success" class="modal fade" role="dialog"> <!-- Success handling -->
+          <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+            <p class="text-success"><b>Erfolg</b></p>
+            </div>
+            <div class="modal-body">
+              <?php echo($succ); ?>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" onclick="window.location = window.location.href;">Schliessen</button>
+            </div>
+            </div>
+  
+          </div>
+        </div> <!-- Success handling -->
+        <?php
+          }
+          ?>
 			?>
 
 

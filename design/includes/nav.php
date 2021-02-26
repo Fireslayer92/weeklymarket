@@ -83,7 +83,7 @@
         <h5 class="modal-title" id="myLoginLabel">Login</h5>
         <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="includes/login.php" method="post">
+      <form action="/includes/login.php" method="post">
       <div class="modal-body">
           <div class="mb-3">
             <label for="username" class="col-form-label">Username/E-Mail:</label>
@@ -112,7 +112,7 @@
         <h5 class="modal-title" id="myRegistrationLabel">Registrieren</h5>
         <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="includes/signup.php" method="post">
+      <form action="/includes/signup.php" method="post">
       <div class="modal-body">
           <div class="mb-3">
             <label for="username" class="col-form-label">Username/E-Mail:</label>

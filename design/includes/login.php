@@ -35,19 +35,19 @@ if (isset($_POST['login-submit']))
                 $_SESSION['privilege'] = $user['privilege'];                
      
                 $_SESSION['message'] ='Erfolgreich Angemeldet.';
-                header("Location: ../index.php");
+                header("Location: /index.php");
                 exit();
                 
             } else {
                 
                 $_SESSION['message'] ='Benutzername oder Kennwort ist falsch.';
-                header("Location: ../index.php");
+                header("Location: /index.php");
                 exit();
             }
         }
 }
 else{
-    header("Location: ../index.php");
+    header("Location: /index.php");
     exit();
     echo '<a href="includes/logout.php" class="nav-link">Log out</a>';
 }
