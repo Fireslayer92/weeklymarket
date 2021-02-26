@@ -1,7 +1,10 @@
 <!--Navigation-->
 <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
   <div class="container-fluid">  
-  <h3 class="navbar-brand">Wochenmarkt</h3>  
+  <h3 class="navbar-brand">Wochenmarkt</h3>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navMenue" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>  
       <div class="collapse navbar-collapse justify-content-end" id="navMenue">
         <ul class="navbar-nav ml-auto justify-content-end">
         <?php

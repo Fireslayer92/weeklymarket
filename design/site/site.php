@@ -141,11 +141,11 @@ session_start();
         </div>
       <div class="col-10 m-1 text-center">
 
-        <h1>Herzlich Wilkommen <span style="color: red;"><i class="fas fa-heart"></i></span></h1>
+        <h1>Herzlich Willkommen <span style="color: red;"><i class="fas fa-heart"></i></span></h1>
         <hr class="my-4">
-        <h3>Standort erstellung</h3> 
+        <h3>Standort Erstellung</h3> 
         
-        <p>Vielen Dank für Ihre Registrierung auf unserer Plattform. Hier können Sie Ihren Standort erfassen und zur verfügung stellen.</p>
+        <p>Vielen Dank für Ihre Registrierung auf unserer Plattform. Hier können Sie Ihren Standort erfassen und zur Verfügung stellen.</p>
         
         
 

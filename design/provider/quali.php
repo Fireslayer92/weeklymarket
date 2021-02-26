@@ -145,11 +145,11 @@ session_start();
 
         <h1>Herzlich Wilkommen <span style="color: red;"><i class="fas fa-heart"></i></span></h1>
         <hr class="my-4">
-        <h3>Qualification</h3> 
+        <h3>Qualifikation</h3> 
         
-        <p>Vielen Dank für Ihre Registrierung auf unserer Plattform. Damit Sie einen Markstand über unsere Webseite betreiben können, müssen Sie ein Qualifikation Verfahren durchlaufen.</p>
-        <p>Mit der eingabe alle Dokumente werden Sie überprüft und danach können Sie einen Termin für die Probemonate reservieren.</p>
-        <p>Wenn die zwei Monate Probemonat fertig sind und alle Qualifikationen abgeschlossen sind, können Sie entweder einen stand für 12 Monate oder 3 mal einen Stand für 6 Monate reservieren.</p>
+        <p>Vielen Dank für Ihre Registrierung auf unserer Plattform. Damit Sie einen Markstand über unsere Webseite betreiben können, müssen Sie ein Qualifikationsverfahren durchlaufen.</p>
+        <p>Mit der Eingabe aller Dokumente werden Sie überprüft und danach können Sie einen Termin für die Probemonate reservieren.</p>
+        <p>Wenn die zwei Monate auf Probe fertig sind und alle Qualifikationen abgeschlossen sind, können Sie entweder einen Stand für 12 Monate oder 3 mal einen Stand für 6 Monate reservieren.</p>
         
 
         

@@ -34,7 +34,7 @@ if (isset($_POST['login-submit']))
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['privilege'] = $user['privilege'];                
      
-                $_SESSION['message'] ='Erfolgreich Angemeldet.';
+                $_SESSION['successMessage'] ='Erfolgreich Angemeldet.';
                 header("Location: /index.php");
                 exit();
                 
